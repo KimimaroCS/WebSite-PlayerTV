@@ -1,0 +1,458 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+
+    background: #080808;
+
+    color: white;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+.admin-container {
+
+    width: 90%;
+
+    max-width: 1100px;
+
+    margin:
+        50px auto;
+
+}
+
+
+.admin-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 40px;
+
+}
+
+
+h1 {
+
+    font-size: 32px;
+
+    letter-spacing: 3px;
+
+}
+
+
+h1 span {
+
+    font-weight: normal;
+
+}
+
+
+.subtitle {
+
+    color: #888;
+
+    margin-top: 8px;
+
+}
+
+
+.logout-button {
+
+    background: #181818;
+
+    border:
+        1px solid
+        #333;
+
+    color: white;
+
+    padding:
+        11px 16px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+}
+
+
+.logout-button:hover {
+
+    background: #252525;
+
+}
+
+
+/* SEARCH */
+
+.search-box {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-bottom: 30px;
+
+}
+
+
+.search-box input {
+
+    flex: 1;
+
+    padding: 15px;
+
+    background: #151515;
+
+    border:
+        1px solid
+        #333;
+
+    border-radius: 6px;
+
+    color: white;
+
+    font-size: 16px;
+
+    outline: none;
+
+}
+
+
+.search-box select {
+
+    padding:
+        0 15px;
+
+    background: #151515;
+
+    border:
+        1px solid
+        #333;
+
+    border-radius: 6px;
+
+    color: white;
+
+    outline: none;
+
+}
+
+
+.search-box button {
+
+    padding:
+        15px 25px;
+
+    background: white;
+
+    color: black;
+
+    border: none;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+}
+
+
+.search-box button:hover {
+
+    background: #ddd;
+
+}
+
+
+#loading {
+
+    color: #888;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* RESULTS */
+
+.result {
+
+    display: flex;
+
+    gap: 20px;
+
+    background: #111;
+
+    border:
+        1px solid
+        #222;
+
+    padding: 15px;
+
+    margin-bottom: 15px;
+
+    border-radius: 8px;
+
+}
+
+
+.result img {
+
+    width: 100px;
+
+    height: 150px;
+
+    object-fit: cover;
+
+    border-radius: 5px;
+
+}
+
+
+.result-info {
+
+    flex: 1;
+
+}
+
+
+.result-type {
+
+    color: #888;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.result-title {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+
+}
+
+
+.result-year {
+
+    color: #888;
+
+    margin-bottom: 10px;
+
+}
+
+
+.result-id {
+
+    color: #666;
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.result button {
+
+    padding:
+        10px 15px;
+
+    background: white;
+
+    color: black;
+
+    border: none;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+}
+
+
+.result button:hover {
+
+    background: #ddd;
+
+}
+
+
+/* SECTIONS */
+
+hr {
+
+    border: none;
+
+    border-top:
+        1px solid
+        #222;
+
+    margin:
+        50px 0;
+
+}
+
+
+h2 {
+
+    margin-bottom: 20px;
+
+}
+
+
+/* LIBRARY */
+
+.library-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 15px;
+
+    background: #111;
+
+    border:
+        1px solid
+        #222;
+
+    margin-bottom: 10px;
+
+    border-radius: 6px;
+
+}
+
+
+.library-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+}
+
+
+.library-info span {
+
+    color: #666;
+
+    font-size: 13px;
+
+}
+
+
+.delete-button {
+
+    background: #222;
+
+    color: white;
+
+    border:
+        1px solid
+        #444;
+
+    padding:
+        8px 12px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+}
+
+
+.delete-button:hover {
+
+    background: #333;
+
+}
+
+
+.empty-library {
+
+    color: #666;
+
+    padding:
+        20px 0;
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .admin-header {
+
+        align-items: flex-start;
+
+        gap: 20px;
+
+        flex-direction: column;
+
+    }
+
+
+    .search-box {
+
+        flex-direction: column;
+
+    }
+
+
+    .search-box select {
+
+        padding: 15px;
+
+    }
+
+
+    .result {
+
+        flex-direction: column;
+
+    }
+
+
+    .library-item {
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+        flex-direction: column;
+
+    }
+
+}

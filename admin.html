@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        NexiumFilms - Administration
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="admin.css"
+    >
+
+    <script>
+
+        if (
+            sessionStorage.getItem(
+                "nexium_admin_auth"
+            ) !== "1"
+        ) {
+
+            window.location.replace(
+                "login.html"
+            );
+
+        }
+
+    </script>
+
+</head>
+
+
+<body>
+
+<div class="admin-container">
+
+
+    <div class="admin-header">
+
+        <div>
+
+            <h1>
+                NEXIUM<span>FILMS</span>
+            </h1>
+
+            <p class="subtitle">
+                Administration
+            </p>
+
+        </div>
+
+
+        <button
+            id="logoutButton"
+            class="logout-button"
+        >
+            SE DÉCONNECTER
+        </button>
+
+    </div>
+
+
+    <!-- RECHERCHE -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="mediaSearch"
+            placeholder="Rechercher un film ou une série..."
+            autocomplete="off"
+        >
+
+        <select id="mediaType">
+
+            <option value="movie">
+                🎬 Films
+            </option>
+
+            <option value="tv">
+                📺 Séries
+            </option>
+
+        </select>
+
+
+        <button
+            id="searchButton"
+        >
+            RECHERCHER
+        </button>
+
+    </div>
+
+
+    <div id="loading"></div>
+
+
+    <div id="results"></div>
+
+
+    <hr>
+
+
+    <!-- FILMS -->
+
+    <h2>
+        🎬 Films actuellement ajoutés
+    </h2>
+
+    <div id="movieLibrary"></div>
+
+
+    <hr>
+
+
+    <!-- SERIES -->
+
+    <h2>
+        📺 Séries actuellement ajoutées
+    </h2>
+
+    <div id="seriesLibrary"></div>
+
+
+</div>
+
+
+<script src="admin.js"></script>
+
+</body>
+
+</html>

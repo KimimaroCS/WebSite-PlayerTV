@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NexiumFilms</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        NEXIUM<span>FILMS</span>
+    </div>
+
+    <nav>
+        <a href="#" class="active">Accueil</a>
+        <a href="#films">Films</a>
+        <a href="#series">Séries</a>
+        <a href="#categories">Catégories</a>
+    </nav>
+
+    <div class="nav-right">
+
+        <div class="search">
+
+            <span class="search-icon">⌕</span>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Rechercher..."
+                autocomplete="off"
+            >
+
+        </div>
+
+        <a
+            href="login.html"
+            class="admin-link"
+            title="Administration"
+        >
+            ⚙
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- ========================= -->
+<!-- HERO -->
+<!-- ========================= -->
+
+<section class="hero">
+
+    <div
+        class="hero-background"
+        id="heroBackground"
+    ></div>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            NEXIUMFILMS
+        </div>
+
+        <h1 id="heroTitle">
+            Ta bibliothèque.<br>
+            Ton univers.
+        </h1>
+
+        <p id="heroDescription">
+            Retrouve tous tes films et séries
+            dans une expérience cinéma premium.
+        </p>
+
+        <div class="hero-buttons">
+
+            <button
+                class="primary-button"
+                id="heroPlayButton"
+            >
+                ▶&nbsp; Lecture
+            </button>
+
+            <a
+                href="#films"
+                class="secondary-button"
+            >
+                ⓘ &nbsp; Explorer
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- RECHERCHE -->
+<!-- ========================= -->
+
+<section
+    id="searchResultsSection"
+    class="content-section search-results-section hidden"
+>
+
+    <div class="section-header">
+
+        <div>
+
+            <span class="section-kicker">
+                RECHERCHE
+            </span>
+
+            <h2 id="searchResultsTitle">
+                Résultats
+            </h2>
+
+        </div>
+
+    </div>
+
+    <div
+        id="searchResults"
+        class="movie-grid"
+    ></div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- FILMS -->
+<!-- ========================= -->
+
+<main id="films">
+
+    <section class="content-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    TA BIBLIOTHÈQUE
+                </span>
+
+                <h2>
+                    Tous les films
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="movieGrid"
+            class="movie-grid"
+        ></div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- SERIES -->
+    <!-- ========================= -->
+
+    <section
+        id="series"
+        class="content-section"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    TA BIBLIOTHÈQUE
+                </span>
+
+                <h2>
+                    Toutes les séries
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="seriesGrid"
+            class="movie-grid"
+        ></div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- CATEGORIES -->
+    <!-- ========================= -->
+
+    <section
+        class="content-section category-section"
+        data-category="Action"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    CATÉGORIE
+                </span>
+
+                <h2>
+                    ⚔️ Action
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="category-Action"
+            class="movie-row"
+        ></div>
+
+    </section>
+
+
+    <section
+        class="content-section category-section"
+        data-category="Science-Fiction"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    CATÉGORIE
+                </span>
+
+                <h2>
+                    🚀 Science-Fiction
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="category-Science-Fiction"
+            class="movie-row"
+        ></div>
+
+    </section>
+
+
+    <section
+        class="content-section category-section"
+        data-category="Fantastique"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    CATÉGORIE
+                </span>
+
+                <h2>
+                    🧙 Fantastique
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="category-Fantastique"
+            class="movie-row"
+        ></div>
+
+    </section>
+
+
+    <section
+        class="content-section category-section"
+        data-category="Comédie"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    CATÉGORIE
+                </span>
+
+                <h2>
+                    😂 Comédie
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="category-Comédie"
+            class="movie-row"
+        ></div>
+
+    </section>
+
+
+    <section
+        class="content-section category-section"
+        data-category="Horreur"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    CATÉGORIE
+                </span>
+
+                <h2>
+                    👻 Horreur
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="category-Horreur"
+            class="movie-row"
+        ></div>
+
+    </section>
+
+
+    <section
+        class="content-section category-section"
+        data-category="Romance"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    CATÉGORIE
+                </span>
+
+                <h2>
+                    ❤️ Romance
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="category-Romance"
+            class="movie-row"
+        ></div>
+
+    </section>
+
+
+    <section
+        class="content-section category-section"
+        data-category="Thriller"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    CATÉGORIE
+                </span>
+
+                <h2>
+                    🕵️ Thriller
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div
+            id="category-Thriller"
+            class="movie-row"
+        ></div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- EXPLORATION -->
+    <!-- ========================= -->
+
+    <section
+        class="content-section"
+        id="categories"
+    >
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    EXPLORE
+                </span>
+
+                <h2>
+                    Catégories
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <div class="category-grid">
+
+            <a
+                href="#category-Action"
+                class="category-card"
+            >
+                <span>⚔️</span>
+                <strong>Action</strong>
+            </a>
+
+
+            <a
+                href="#category-Science-Fiction"
+                class="category-card"
+            >
+                <span>🚀</span>
+                <strong>Science-Fiction</strong>
+            </a>
+
+
+            <a
+                href="#category-Fantastique"
+                class="category-card"
+            >
+                <span>🧙</span>
+                <strong>Fantastique</strong>
+            </a>
+
+
+            <a
+                href="#category-Comédie"
+                class="category-card"
+            >
+                <span>😂</span>
+                <strong>Comédie</strong>
+            </a>
+
+
+            <a
+                href="#category-Horreur"
+                class="category-card"
+            >
+                <span>👻</span>
+                <strong>Horreur</strong>
+            </a>
+
+
+            <a
+                href="#category-Romance"
+                class="category-card"
+            >
+                <span>❤️</span>
+                <strong>Romance</strong>
+            </a>
+
+
+            <a
+                href="#category-Thriller"
+                class="category-card"
+            >
+                <span>🕵️</span>
+                <strong>Thriller</strong>
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ========================= -->
+<!-- PLAYER -->
+<!-- ========================= -->
+
+<div
+    id="playerModal"
+    class="modal"
+>
+
+    <div class="player-container">
+
+        <button
+            class="close-button"
+            id="closePlayerButton"
+        >
+            ✕
+        </button>
+
+
+        <!-- Informations série -->
+
+        <div
+            id="seriesControls"
+            class="series-controls hidden"
+        >
+
+            <div class="series-selector">
+
+                <label for="seasonSelect">
+                    Saison
+                </label>
+
+                <select id="seasonSelect"></select>
+
+            </div>
+
+
+            <div class="series-selector">
+
+                <label for="episodeSelect">
+                    Épisode
+                </label>
+
+                <select id="episodeSelect"></select>
+
+            </div>
+
+
+            <button
+                id="playEpisodeButton"
+                class="episode-button"
+            >
+                ▶ LIRE L'ÉPISODE
+            </button>
+
+        </div>
+
+
+        <iframe
+            id="videoPlayer"
+            src=""
+            width="100%"
+            height="100%"
+            frameborder="0"
+            allow="autoplay; fullscreen; encrypted-media"
+            allowfullscreen
+        ></iframe>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- FOOTER -->
+<!-- ========================= -->
+
+<footer>
+
+    <div class="footer-logo">
+        NEXIUM<span>FILMS</span>
+    </div>
+
+    <p>
+        Ta bibliothèque cinéma personnelle.
+    </p>
+
+    <span class="copyright">
+        © 2026 NexiumFilms
+    </span>
+
+</footer>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
