@@ -2,15 +2,26 @@
 <html lang="fr">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>NexiumFilms</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
 
+
 <body>
+
 
 <!-- =====================================================
      NAVBAR
@@ -18,15 +29,22 @@
 
 <header class="navbar">
 
-    <div class="nav-left">
+    <div class="navbar-inner">
 
-        <a href="#" class="logo">
+        <a
+            href="#"
+            class="logo"
+        >
             NEXIUM<span>FILMS</span>
         </a>
 
+
         <nav>
 
-            <a href="#" class="active">
+            <a
+                href="#"
+                class="active"
+            >
                 Accueil
             </a>
 
@@ -38,46 +56,45 @@
                 Séries
             </a>
 
-            <a href="#categories">
-                Catégories
+            <a href="#themes">
+                Thèmes
             </a>
 
         </nav>
 
-    </div>
+
+        <div class="navbar-actions">
+
+            <div class="search">
+
+                <span>⌕</span>
+
+                <input
+                    id="searchInput"
+                    type="text"
+                    placeholder="Rechercher..."
+                    autocomplete="off"
+                >
+
+            </div>
 
 
-    <div class="nav-right">
-
-        <div class="search">
-
-            <span class="search-icon">⌕</span>
-
-            <input
-                type="text"
-                id="searchInput"
-                placeholder="Titres, films, séries..."
-                autocomplete="off"
+            <a
+                href="login.html"
+                class="admin-button"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Administration"
             >
+                ⚙
+            </a>
 
         </div>
-
-
-        <!-- Ouvre ADMIN dans un nouvel onglet -->
-
-        <a
-            href="login.html"
-            class="admin-button"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Administration"
-        >
-            ⚙
-        </a>
 
     </div>
 
 </header>
+
 
 
 <!-- =====================================================
@@ -91,49 +108,40 @@
         class="hero-background"
     ></div>
 
-    <div class="hero-vignette"></div>
+    <div class="hero-dark"></div>
 
-    <div class="hero-side-gradient"></div>
+    <div class="hero-bottom"></div>
 
 
     <div class="hero-content">
 
-        <div class="hero-label">
-            NEXIUMFILMS ORIGINAL
+        <div
+            id="heroType"
+            class="hero-type"
+        >
+            À L'AFFICHE
         </div>
 
 
         <h1 id="heroTitle">
-            Ta bibliothèque.<br>
-            Ton cinéma.
+            NexiumFilms
         </h1>
 
 
-        <div class="hero-meta">
+        <div
+            id="heroMeta"
+            class="hero-meta"
+        ></div>
 
-            <span id="heroYear">
-                2026
-            </span>
 
-            <span class="meta-dot">•</span>
-
-            <span>
-                HD
-            </span>
-
-            <span class="meta-dot">•</span>
-
-            <span>
-                FR
-            </span>
-
-        </div>
+        <div
+            id="heroGenres"
+            class="hero-genres"
+        ></div>
 
 
         <p id="heroDescription">
-            Retrouve tes films et séries dans une
-            expérience pensée comme une véritable
-            plateforme de streaming.
+            Bienvenue dans ta bibliothèque cinéma.
         </p>
 
 
@@ -141,45 +149,41 @@
 
             <button
                 id="heroPlayButton"
-                class="watch-button"
+                class="btn-primary"
             >
-                <span>▶</span>
-                Regarder
+                ▶ Regarder
             </button>
 
 
-            <a
-                href="#films"
-                class="info-button"
+            <button
+                id="heroInfoButton"
+                class="btn-secondary"
             >
-                <span>＋</span>
-                Explorer
-            </a>
+                ⓘ Informations
+            </button>
 
         </div>
 
     </div>
 
-
-    <div class="hero-bottom-fade"></div>
-
 </section>
 
 
+
 <!-- =====================================================
-     RECHERCHE
+     SEARCH RESULTS
 ===================================================== -->
 
 <section
     id="searchResultsSection"
-    class="section search-section hidden"
+    class="section search-results hidden"
 >
 
-    <div class="section-heading">
+    <div class="section-title">
 
         <div>
 
-            <span class="section-overline">
+            <span>
                 RECHERCHE
             </span>
 
@@ -200,316 +204,148 @@
 </section>
 
 
+
 <!-- =====================================================
-     CONTENU
+     COLLECTION
 ===================================================== -->
 
 <main>
 
 
-    <!-- =================================================
-         FILMS
-    ================================================== -->
+<!-- =====================================================
+     FILMS
+===================================================== -->
 
-    <section
-        id="films"
-        class="section"
-    >
+<section
+    id="films"
+    class="section"
+>
 
-        <div class="section-heading">
+    <div class="section-title">
 
-            <div>
+        <div>
 
-                <span class="section-overline">
-                    TA COLLECTION
-                </span>
-
-                <h2>
-                    Films
-                </h2>
-
-            </div>
-
-            <span class="section-count">
-                MA BIBLIOTHÈQUE
+            <span>
+                COLLECTION
             </span>
-
-        </div>
-
-
-        <div
-            id="movieGrid"
-            class="movie-grid"
-        ></div>
-
-    </section>
-
-
-
-    <!-- =================================================
-         SERIES
-    ================================================== -->
-
-    <section
-        id="series"
-        class="section"
-    >
-
-        <div class="section-heading">
-
-            <div>
-
-                <span class="section-overline">
-                    TA COLLECTION
-                </span>
-
-                <h2>
-                    Séries
-                </h2>
-
-            </div>
-
-            <span class="section-count">
-                MA BIBLIOTHÈQUE
-            </span>
-
-        </div>
-
-
-        <div
-            id="seriesGrid"
-            class="movie-grid"
-        ></div>
-
-    </section>
-
-
-
-    <!-- =================================================
-         CATEGORIES
-    ================================================== -->
-
-    <section
-        id="categories"
-        class="section categories-section"
-    >
-
-        <div class="section-heading">
-
-            <div>
-
-                <span class="section-overline">
-                    EXPLORE
-                </span>
-
-                <h2>
-                    Catégories
-                </h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="category-grid">
-
-            <a
-                href="#category-Action"
-                class="category-card"
-            >
-                <span class="category-icon">⚔</span>
-                <span>Action</span>
-            </a>
-
-
-            <a
-                href="#category-Science-Fiction"
-                class="category-card"
-            >
-                <span class="category-icon">✦</span>
-                <span>Science-Fiction</span>
-            </a>
-
-
-            <a
-                href="#category-Fantastique"
-                class="category-card"
-            >
-                <span class="category-icon">◈</span>
-                <span>Fantastique</span>
-            </a>
-
-
-            <a
-                href="#category-Comédie"
-                class="category-card"
-            >
-                <span class="category-icon">☺</span>
-                <span>Comédie</span>
-            </a>
-
-
-            <a
-                href="#category-Horreur"
-                class="category-card"
-            >
-                <span class="category-icon">☠</span>
-                <span>Horreur</span>
-            </a>
-
-
-            <a
-                href="#category-Romance"
-                class="category-card"
-            >
-                <span class="category-icon">♥</span>
-                <span>Romance</span>
-            </a>
-
-
-            <a
-                href="#category-Thriller"
-                class="category-card"
-            >
-                <span class="category-icon">◉</span>
-                <span>Thriller</span>
-            </a>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =================================================
-         CATEGORY ROWS
-    ================================================== -->
-
-    <section
-        id="category-Action"
-        class="section category-section"
-    >
-
-        <div class="section-heading">
 
             <h2>
-                Action
+                Films
             </h2>
 
-            <span class="category-line"></span>
+        </div>
+
+
+        <span class="section-small">
+            TA BIBLIOTHÈQUE
+        </span>
+
+    </div>
+
+
+    <div
+        id="movieGrid"
+        class="movie-grid"
+    ></div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SERIES
+===================================================== -->
+
+<section
+    id="series"
+    class="section"
+>
+
+    <div class="section-title">
+
+        <div>
+
+            <span>
+                COLLECTION
+            </span>
+
+            <h2>
+                Séries
+            </h2>
 
         </div>
 
-        <div
-            id="category-Action"
-            class="movie-row"
-        ></div>
 
-    </section>
+        <span class="section-small">
+            TA BIBLIOTHÈQUE
+        </span>
+
+    </div>
 
 
-    <section
-        class="section category-section"
-    >
+    <div
+        id="seriesGrid"
+        class="movie-grid"
+    ></div>
 
-        <div class="section-heading">
-            <h2>Science-Fiction</h2>
-            <span class="category-line"></span>
+</section>
+
+
+
+<!-- =====================================================
+     THEMES
+===================================================== -->
+
+<section
+    id="themes"
+    class="section themes-section"
+>
+
+    <div class="section-title">
+
+        <div>
+
+            <span>
+                EXPLORER
+            </span>
+
+            <h2>
+                Thèmes
+            </h2>
+
         </div>
 
-        <div
-            id="category-Science-Fiction"
-            class="movie-row"
-        ></div>
 
-    </section>
+        <span
+            id="themeCount"
+            class="section-small"
+        >
+            0 THÈME
+        </span>
 
-
-    <section
-        class="section category-section"
-    >
-
-        <div class="section-heading">
-            <h2>Fantastique</h2>
-            <span class="category-line"></span>
-        </div>
-
-        <div
-            id="category-Fantastique"
-            class="movie-row"
-        ></div>
-
-    </section>
+    </div>
 
 
-    <section
-        class="section category-section"
-    >
+    <!-- Les thèmes seront créés automatiquement par JS -->
 
-        <div class="section-heading">
-            <h2>Comédie</h2>
-            <span class="category-line"></span>
-        </div>
+    <div
+        id="themeGrid"
+        class="theme-grid"
+    ></div>
 
-        <div
-            id="category-Comédie"
-            class="movie-row"
-        ></div>
-
-    </section>
+</section>
 
 
-    <section
-        class="section category-section"
-    >
 
-        <div class="section-heading">
-            <h2>Horreur</h2>
-            <span class="category-line"></span>
-        </div>
+<!-- =====================================================
+     THEME ROWS
+===================================================== -->
 
-        <div
-            id="category-Horreur"
-            class="movie-row"
-        ></div>
+<div id="themeRows"></div>
 
-    </section>
-
-
-    <section
-        class="section category-section"
-    >
-
-        <div class="section-heading">
-            <h2>Romance</h2>
-            <span class="category-line"></span>
-        </div>
-
-        <div
-            id="category-Romance"
-            class="movie-row"
-        ></div>
-
-    </section>
-
-
-    <section
-        class="section category-section"
-    >
-
-        <div class="section-heading">
-            <h2>Thriller</h2>
-            <span class="category-line"></span>
-        </div>
-
-        <div
-            id="category-Thriller"
-            class="movie-row"
-        ></div>
-
-    </section>
 
 </main>
+
 
 
 <!-- =====================================================
@@ -521,11 +357,12 @@
     class="modal"
 >
 
-    <div class="player-container">
+    <div class="player-wrapper">
+
 
         <button
             id="closePlayerButton"
-            class="close-button"
+            class="close-player"
         >
             ×
         </button>
@@ -536,9 +373,9 @@
             class="series-controls hidden"
         >
 
-            <div class="selector">
+            <div>
 
-                <label for="seasonSelect">
+                <label>
                     SAISON
                 </label>
 
@@ -547,9 +384,9 @@
             </div>
 
 
-            <div class="selector">
+            <div>
 
-                <label for="episodeSelect">
+                <label>
                     ÉPISODE
                 </label>
 
@@ -560,7 +397,6 @@
 
             <button
                 id="playEpisodeButton"
-                class="episode-button"
             >
                 ▶ LIRE
             </button>
@@ -581,42 +417,30 @@
 </div>
 
 
+
 <!-- =====================================================
      FOOTER
 ===================================================== -->
 
 <footer>
 
-    <div class="footer-inner">
-
-        <div class="footer-brand">
-
-            <div class="logo">
-                NEXIUM<span>FILMS</span>
-            </div>
-
-            <p>
-                Ton cinéma. Ton univers.
-            </p>
-
-        </div>
-
-
-        <div class="footer-right">
-
-            <span>
-                NEXIUMFILMS
-            </span>
-
-            <span>
-                © 2026
-            </span>
-
-        </div>
-
+    <div class="footer-logo">
+        NEXIUM<span>FILMS</span>
     </div>
 
+
+    <p>
+        Ta bibliothèque cinéma personnelle.
+    </p>
+
+
+    <small>
+        This product uses the TMDB API but is not endorsed
+        or certified by TMDB.
+    </small>
+
 </footer>
+
 
 
 <script src="script.js"></script>

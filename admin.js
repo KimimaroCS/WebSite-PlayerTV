@@ -30,8 +30,14 @@ const TMDB_ACCESS_TOKEN =
 
 
 /*
-   ⚠️ REMPLACE uniquement cette ligne
-   par ton vrai Read Access Token TMDB.
+    IMPORTANT :
+
+    Mets ton Read Access Token TMDB ici.
+
+    Exemple :
+
+    const TMDB_ACCESS_TOKEN =
+        "eyJhbGciOiJIUzI1NiJ9....";
 */
 
 
@@ -56,7 +62,7 @@ let series =
 
 
 /* =========================================================
-   GENRES
+   GENRES TMDB
 ========================================================= */
 
 const genreMap = {
@@ -97,7 +103,7 @@ const genreMap = {
 
 
 /* =========================================================
-   ELEMENTS
+   ELEMENTS HTML
 ========================================================= */
 
 const mediaSearch =
@@ -153,11 +159,72 @@ function escapeHtml(text) {
     }
 
     return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   TMDB REQUEST
+========================================================= */
+
+async function tmdbFetch(
+    endpoint
+) {
+
+    const response =
+        await fetch(
+            "https://api.themoviedb.org/3" +
+            endpoint,
+            {
+
+                method: "GET",
+
+                headers: {
+
+                    "Authorization":
+                        "Bearer " +
+                        TMDB_ACCESS_TOKEN,
+
+                    "accept":
+                        "application/json"
+
+                }
+
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "TMDB HTTP " +
+            response.status
+        );
+
+    }
+
+
+    return await response.json();
 
 }
 
@@ -200,60 +267,31 @@ async function searchTMDB() {
         let endpoint;
 
 
-        if (type === "movie") {
+        if (
+            type === "movie"
+        ) {
 
             endpoint =
-                "https://api.themoviedb.org/3/search/movie";
+                "/search/movie";
 
         } else {
 
             endpoint =
-                "https://api.themoviedb.org/3/search/tv";
-
-        }
-
-
-        const url =
-            endpoint +
-            "?language=fr-FR" +
-            "&query=" +
-            encodeURIComponent(query);
-
-
-        const response =
-            await fetch(
-                url,
-                {
-
-                    method: "GET",
-
-                    headers: {
-
-                        "Authorization":
-                            "Bearer " +
-                            TMDB_ACCESS_TOKEN,
-
-                        "accept":
-                            "application/json"
-
-                    }
-
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "TMDB HTTP " +
-                response.status
-            );
+                "/search/tv";
 
         }
 
 
         const data =
-            await response.json();
+            await tmdbFetch(
+                endpoint +
+                "?language=fr-FR" +
+                "&query=" +
+                encodeURIComponent(
+                    query
+                ) +
+                "&include_adult=false"
+            );
 
 
         loading.innerText =
@@ -296,7 +334,7 @@ async function searchTMDB() {
 
 
         results.innerHTML =
-            "<p>❌ Erreur : " +
+            "<p>❌ Erreur TMDB : " +
             escapeHtml(
                 error.message
             ) +
@@ -308,7 +346,7 @@ async function searchTMDB() {
 
 
 /* =========================================================
-   AFFICHER RESULTAT TMDB
+   AFFICHER RESULTAT
 ========================================================= */
 
 function displayTMDBResult(
@@ -322,29 +360,29 @@ function displayTMDBResult(
 
     const title =
         isMovie
-        ? item.title
-        : item.name;
+            ? item.title
+            : item.name;
 
 
     const date =
         isMovie
-        ? item.release_date
-        : item.first_air_date;
+            ? item.release_date
+            : item.first_air_date;
 
 
     const year =
         date
-        ? date.substring(0, 4)
-        : "N/A";
+            ? date.substring(0, 4)
+            : "N/A";
 
 
     const poster =
         item.poster_path
-        ?
-        "https://image.tmdb.org/t/p/w500" +
-        item.poster_path
-        :
-        "";
+
+            ? "https://image.tmdb.org/t/p/w500" +
+              item.poster_path
+
+            : "";
 
 
     const div =
@@ -371,35 +409,41 @@ function displayTMDBResult(
 
                 (
                     isMovie
-                    ?
-                    "🎬 FILM"
-                    :
-                    "📺 SÉRIE"
+                        ? "🎬 FILM"
+                        : "📺 SÉRIE"
                 ) +
 
             '</div>' +
 
             '<div class="result-title">' +
-                escapeHtml(title) +
+
+                escapeHtml(
+                    title
+                ) +
+
             '</div>' +
 
             '<div class="result-year">' +
-                escapeHtml(year) +
+
+                escapeHtml(
+                    year
+                ) +
+
             '</div>' +
 
             '<div class="result-id">' +
-                'TMDB ID : ' +
+
+                "TMDB ID : " +
                 item.id +
+
             '</div>' +
 
             '<button class="add-button">' +
 
                 (
                     isMovie
-                    ?
-                    "AJOUTER LE FILM"
-                    :
-                    "AJOUTER LA SÉRIE"
+                        ? "AJOUTER LE FILM"
+                        : "AJOUTER LA SÉRIE"
                 ) +
 
             '</button>' +
@@ -420,17 +464,13 @@ function displayTMDBResult(
             if (isMovie) {
 
                 addMovie(
-                    item,
-                    poster,
-                    year
+                    item
                 );
 
             } else {
 
                 addSeries(
-                    item,
-                    poster,
-                    year
+                    item
                 );
 
             }
@@ -450,17 +490,18 @@ function displayTMDBResult(
    AJOUT FILM
 ========================================================= */
 
-function addMovie(
-    item,
-    poster,
-    year
+async function addMovie(
+    item
 ) {
 
     const alreadyExists =
         movies.some(
             function(movie) {
 
-                return movie.id === item.id;
+                return (
+                    Number(movie.id) ===
+                    Number(item.id)
+                );
 
             }
         );
@@ -477,42 +518,141 @@ function addMovie(
     }
 
 
-    const movie = {
-
-        id: item.id,
-
-        title: item.title,
-
-        year: year,
-
-        poster: poster,
-
-        type: "movie",
-
-        genreIds:
-            item.genre_ids || []
-
-    };
-
-
-    movies.push(
-        movie
-    );
-
-
-    localStorage.setItem(
-        "nexiumfilms_movies",
-        JSON.stringify(movies)
-    );
-
-
-    alert(
+    loading.innerText =
+        "🎬 Récupération des informations de " +
         item.title +
-        " a été ajouté à NexiumFilms !"
-    );
+        "...";
 
 
-    displayLibraries();
+    try {
+
+        /*
+            On récupère les vrais détails
+            du film depuis TMDB.
+        */
+
+        const details =
+            await tmdbFetch(
+                "/movie/" +
+                item.id +
+                "?language=fr-FR"
+            );
+
+
+        const movie = {
+
+            id:
+                details.id,
+
+            title:
+                details.title || item.title,
+
+            originalTitle:
+                details.original_title || "",
+
+            year:
+                details.release_date
+                    ? details.release_date
+                        .substring(0, 4)
+                    : "",
+
+            poster:
+                details.poster_path
+                    ? "https://image.tmdb.org/t/p/w500" +
+                      details.poster_path
+                    : "",
+
+            backdrop:
+                details.backdrop_path
+                    ? "https://image.tmdb.org/t/p/w1280" +
+                      details.backdrop_path
+                    : "",
+
+            overview:
+                details.overview || "",
+
+            runtime:
+                details.runtime || 0,
+
+            rating:
+                details.vote_average || 0,
+
+            voteCount:
+                details.vote_count || 0,
+
+            originalLanguage:
+                details.original_language || "",
+
+            genreIds:
+                details.genres
+                    ? details.genres.map(
+                        function(genre) {
+
+                            return genre.id;
+
+                        }
+                    )
+                    : [],
+
+            genres:
+                details.genres
+                    ? details.genres.map(
+                        function(genre) {
+
+                            return genre.name;
+
+                        }
+                    )
+                    : [],
+
+            type:
+                "movie"
+
+        };
+
+
+        movies.push(
+            movie
+        );
+
+
+        localStorage.setItem(
+            "nexiumfilms_movies",
+            JSON.stringify(
+                movies
+            )
+        );
+
+
+        loading.innerText =
+            "";
+
+
+        alert(
+            "✅ " +
+            movie.title +
+            " a été ajouté à NexiumFilms !"
+        );
+
+
+        displayLibraries();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        loading.innerText =
+            "";
+
+
+        alert(
+            "❌ Impossible de récupérer les détails TMDB.\n\n" +
+            error.message
+        );
+
+    }
 
 }
 
@@ -522,16 +662,17 @@ function addMovie(
 ========================================================= */
 
 async function addSeries(
-    item,
-    poster,
-    year
+    item
 ) {
 
     const alreadyExists =
         series.some(
             function(show) {
 
-                return show.id === item.id;
+                return (
+                    Number(show.id) ===
+                    Number(item.id)
+                );
 
             }
         );
@@ -549,208 +690,242 @@ async function addSeries(
 
 
     loading.innerText =
-        "📺 Récupération des saisons de " +
+        "📺 Récupération des informations de " +
         item.name +
         "...";
 
 
-    let seasons = [];
-
-
     try {
 
-        seasons =
-            await fetchSeriesSeasons(
-                item.id
+        /*
+            Récupération des détails
+            de la série.
+        */
+
+        const details =
+            await tmdbFetch(
+                "/tv/" +
+                item.id +
+                "?language=fr-FR"
             );
+
+
+        loading.innerText =
+            "📺 Récupération des saisons de " +
+            details.name +
+            "...";
+
+
+        /*
+            Récupération des saisons
+            et épisodes.
+        */
+
+        const seasons =
+            await fetchSeriesSeasons(
+                item.id,
+                details.seasons || []
+            );
+
+
+        const show = {
+
+            id:
+                details.id,
+
+            title:
+                details.name || item.name,
+
+            originalTitle:
+                details.original_name || "",
+
+            year:
+                details.first_air_date
+                    ? details.first_air_date
+                        .substring(0, 4)
+                    : "",
+
+            poster:
+                details.poster_path
+                    ? "https://image.tmdb.org/t/p/w500" +
+                      details.poster_path
+                    : "",
+
+            backdrop:
+                details.backdrop_path
+                    ? "https://image.tmdb.org/t/p/w1280" +
+                      details.backdrop_path
+                    : "",
+
+            overview:
+                details.overview || "",
+
+            rating:
+                details.vote_average || 0,
+
+            voteCount:
+                details.vote_count || 0,
+
+            originalLanguage:
+                details.original_language || "",
+
+            genreIds:
+                details.genres
+                    ? details.genres.map(
+                        function(genre) {
+
+                            return genre.id;
+
+                        }
+                    )
+                    : [],
+
+            genres:
+                details.genres
+                    ? details.genres.map(
+                        function(genre) {
+
+                            return genre.name;
+
+                        }
+                    )
+                    : [],
+
+            seasons:
+                seasons,
+
+            type:
+                "serie"
+
+        };
+
+
+        series.push(
+            show
+        );
+
+
+        localStorage.setItem(
+            "nexiumfilms_series",
+            JSON.stringify(
+                series
+            )
+        );
+
+
+        loading.innerText =
+            "";
+
+
+        alert(
+            "✅ " +
+            show.title +
+            " a été ajoutée à NexiumFilms !"
+        );
+
+
+        displayLibraries();
+
 
     } catch (error) {
 
-        console.error(
-            error
-        );
+        console.error(error);
+
+
+        loading.innerText =
+            "";
+
 
         alert(
-            "La série sera ajoutée, " +
-            "mais les saisons n'ont pas pu être récupérées."
+            "❌ Impossible d'ajouter la série.\n\n" +
+            error.message
         );
 
     }
-
-
-    const show = {
-
-        id: item.id,
-
-        title: item.name,
-
-        year: year,
-
-        poster: poster,
-
-        type: "serie",
-
-        genreIds:
-            item.genre_ids || [],
-
-        seasons: seasons
-
-    };
-
-
-    series.push(
-        show
-    );
-
-
-    localStorage.setItem(
-        "nexiumfilms_series",
-        JSON.stringify(series)
-    );
-
-
-    loading.innerText =
-        "";
-
-
-    alert(
-        item.name +
-        " a été ajoutée à NexiumFilms !"
-    );
-
-
-    displayLibraries();
 
 }
 
 
 /* =========================================================
-   RECUPERER SAISONS TMDB
+   RECUPERER SAISONS + EPISODES
 ========================================================= */
 
 async function fetchSeriesSeasons(
-    seriesId
+    seriesId,
+    tmdbSeasons
 ) {
 
-    const url =
-        "https://api.themoviedb.org/3/tv/" +
-        seriesId +
-        "?language=fr-FR";
-
-
-    const response =
-        await fetch(
-            url,
-            {
-
-                method: "GET",
-
-                headers: {
-
-                    "Authorization":
-                        "Bearer " +
-                        TMDB_ACCESS_TOKEN,
-
-                    "accept":
-                        "application/json"
-
-                }
-
-            }
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            "TMDB HTTP " +
-            response.status
-        );
-
-    }
-
-
-    const data =
-        await response.json();
-
-
-    const seasons =
-        [];
+    const seasons = [];
 
 
     /*
-     On récupère toutes les saisons
-     sauf les Specials = saison 0.
+        On ignore la saison 0 :
+        ce sont les Specials.
     */
 
+    const normalSeasons =
+        (tmdbSeasons || [])
+            .filter(
+                function(season) {
+
+                    return (
+                        Number(
+                            season.season_number
+                        ) !== 0
+                    );
+
+                }
+            );
+
+
     for (
-        const season of
-        (data.seasons || [])
+        const season
+        of normalSeasons
     ) {
 
-        if (
-            season.season_number === 0
-        ) {
-
-            continue;
-
-        }
-
-
-        /*
-         Récupération des épisodes
-         de la saison.
-        */
-
-        const seasonUrl =
-            "https://api.themoviedb.org/3/tv/" +
-            seriesId +
-            "/season/" +
+        loading.innerText =
+            "📺 Saison " +
             season.season_number +
-            "?language=fr-FR";
+            " de " +
+            normalSeasons.length;
+
+
+        const seasonData = {
+
+            season_number:
+                season.season_number,
+
+            name:
+                season.name ||
+                (
+                    "Saison " +
+                    season.season_number
+                ),
+
+            episode_count:
+                season.episode_count || 0,
+
+            episodes:
+                []
+
+        };
 
 
         try {
 
-            const seasonResponse =
-                await fetch(
-                    seasonUrl,
-                    {
-
-                        method: "GET",
-
-                        headers: {
-
-                            "Authorization":
-                                "Bearer " +
-                                TMDB_ACCESS_TOKEN,
-
-                            "accept":
-                                "application/json"
-
-                        }
-
-                    }
+            const data =
+                await tmdbFetch(
+                    "/tv/" +
+                    seriesId +
+                    "/season/" +
+                    season.season_number +
+                    "?language=fr-FR"
                 );
 
 
-            if (!seasonResponse.ok) {
-
-                throw new Error(
-                    "Erreur saison " +
-                    season.season_number
-                );
-
-            }
-
-
-            const seasonData =
-                await seasonResponse.json();
-
-
-            const episodes =
+            seasonData.episodes =
                 (
-                    seasonData.episodes ||
+                    data.episodes ||
                     []
                 ).map(
                     function(episode) {
@@ -761,13 +936,25 @@ async function fetchSeriesSeasons(
                                 episode.episode_number,
 
                             name:
-                                episode.name,
+                                episode.name || "",
 
                             overview:
-                                episode.overview,
+                                episode.overview || "",
 
                             still_path:
                                 episode.still_path
+                                    ? "https://image.tmdb.org/t/p/w500" +
+                                      episode.still_path
+                                    : "",
+
+                            air_date:
+                                episode.air_date || "",
+
+                            runtime:
+                                episode.runtime || 0,
+
+                            rating:
+                                episode.vote_average || 0
 
                         };
 
@@ -775,51 +962,28 @@ async function fetchSeriesSeasons(
                 );
 
 
-            seasons.push({
-
-                season_number:
-                    season.season_number,
-
-                name:
-                    season.name,
-
-                episode_count:
-                    season.episode_count,
-
-                episodes:
-                    episodes
-
-            });
-
-
         } catch (error) {
 
             console.error(
+                "Erreur saison " +
+                season.season_number,
                 error
             );
 
-
             /*
-             Même si les épisodes
-             échouent, on garde la saison.
+                La saison reste enregistrée
+                même si les épisodes échouent.
             */
 
-            seasons.push({
-
-                season_number:
-                    season.season_number,
-
-                name:
-                    season.name,
-
-                episode_count:
-                    season.episode_count,
-
-                episodes: []
-
-            });
+            seasonData.episodes =
+                [];
 
         }
+
+
+        seasons.push(
+            seasonData
+        );
 
     }
 
@@ -830,7 +994,7 @@ async function fetchSeriesSeasons(
 
 
 /* =========================================================
-   AFFICHER BIBLIOTHEQUES
+   AFFICHER LES BIBLIOTHEQUES
 ========================================================= */
 
 function displayLibraries() {
@@ -878,6 +1042,23 @@ function displayMovieLibrary() {
                 "library-item";
 
 
+            const runtime =
+                movie.runtime
+                    ? formatRuntime(
+                        movie.runtime
+                    )
+                    : "Durée inconnue";
+
+
+            const rating =
+                movie.rating
+                    ? "⭐ " +
+                      Number(
+                          movie.rating
+                      ).toFixed(1)
+                    : "";
+
+
             item.innerHTML =
 
                 '<div class="library-info">' +
@@ -889,15 +1070,36 @@ function displayMovieLibrary() {
                     '</strong>' +
 
                     '<span>' +
-                        movie.year +
+
+                        escapeHtml(
+                            movie.year || ""
+                        ) +
+
                         " · TMDB " +
+
                         movie.id +
+
+                        " · " +
+
+                        escapeHtml(
+                            runtime
+                        ) +
+
+                        (
+                            rating
+                                ? " · " +
+                                  rating
+                                : ""
+                        ) +
+
                     '</span>' +
 
                 '</div>' +
 
                 '<button class="delete-button">' +
+
                     "SUPPRIMER" +
+
                 "</button>";
 
 
@@ -969,6 +1171,35 @@ function displaySeriesLibrary() {
                 ).length;
 
 
+            const episodeCount =
+                (
+                    show.seasons || []
+                ).reduce(
+                    function(total, season) {
+
+                        return (
+                            total +
+                            (
+                                season.episodes
+                                    ? season.episodes.length
+                                    : 0
+                            )
+                        );
+
+                    },
+                    0
+                );
+
+
+            const rating =
+                show.rating
+                    ? "⭐ " +
+                      Number(
+                          show.rating
+                      ).toFixed(1)
+                    : "";
+
+
             item.innerHTML =
 
                 '<div class="library-info">' +
@@ -981,7 +1212,9 @@ function displaySeriesLibrary() {
 
                     '<span>' +
 
-                        show.year +
+                        escapeHtml(
+                            show.year || ""
+                        ) +
 
                         " · TMDB " +
 
@@ -993,12 +1226,27 @@ function displaySeriesLibrary() {
 
                         " saison(s)" +
 
+                        " · " +
+
+                        episodeCount +
+
+                        " épisode(s)" +
+
+                        (
+                            rating
+                                ? " · " +
+                                  rating
+                                : ""
+                        ) +
+
                     '</span>' +
 
                 '</div>' +
 
                 '<button class="delete-button">' +
+
                     "SUPPRIMER" +
+
                 "</button>";
 
 
@@ -1029,16 +1277,114 @@ function displaySeriesLibrary() {
 
 
 /* =========================================================
+   FORMAT DUREE
+========================================================= */
+
+function formatRuntime(
+    minutes
+) {
+
+    if (
+        !minutes ||
+        Number(minutes) <= 0
+    ) {
+
+        return "";
+
+    }
+
+
+    const hours =
+        Math.floor(
+            Number(minutes) / 60
+        );
+
+
+    const mins =
+        Number(minutes) % 60;
+
+
+    if (
+        hours === 0
+    ) {
+
+        return (
+            mins +
+            " min"
+        );
+
+    }
+
+
+    if (
+        mins === 0
+    ) {
+
+        return (
+            hours +
+            "h"
+        );
+
+    }
+
+
+    return (
+        hours +
+        "h " +
+        mins +
+        "min"
+    );
+
+}
+
+
+/* =========================================================
    SUPPRIMER FILM
 ========================================================= */
 
-function removeMovie(id) {
+function removeMovie(
+    id
+) {
+
+    const movie =
+        movies.find(
+            function(item) {
+
+                return (
+                    Number(item.id) ===
+                    Number(id)
+                );
+
+            }
+        );
+
+
+    if (!movie) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Supprimer « " +
+            movie.title +
+            " » de NexiumFilms ?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
 
     movies =
         movies.filter(
-            function(movie) {
+            function(item) {
 
-                return movie.id !== id;
+                return (
+                    Number(item.id) !==
+                    Number(id)
+                );
 
             }
         );
@@ -1046,7 +1392,9 @@ function removeMovie(id) {
 
     localStorage.setItem(
         "nexiumfilms_movies",
-        JSON.stringify(movies)
+        JSON.stringify(
+            movies
+        )
     );
 
 
@@ -1059,13 +1407,49 @@ function removeMovie(id) {
    SUPPRIMER SERIE
 ========================================================= */
 
-function removeSeries(id) {
+function removeSeries(
+    id
+) {
+
+    const show =
+        series.find(
+            function(item) {
+
+                return (
+                    Number(item.id) ===
+                    Number(id)
+                );
+
+            }
+        );
+
+
+    if (!show) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Supprimer « " +
+            show.title +
+            " » de NexiumFilms ?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
 
     series =
         series.filter(
-            function(show) {
+            function(item) {
 
-                return show.id !== id;
+                return (
+                    Number(item.id) !==
+                    Number(id)
+                );
 
             }
         );
@@ -1073,7 +1457,9 @@ function removeSeries(id) {
 
     localStorage.setItem(
         "nexiumfilms_series",
-        JSON.stringify(series)
+        JSON.stringify(
+            series
+        )
     );
 
 

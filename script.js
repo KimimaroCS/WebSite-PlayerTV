@@ -1,12 +1,26 @@
-/* =========================================================
+/* =====================================================
    NEXIUMFILMS
-   SCRIPT PRINCIPAL
-========================================================= */
+===================================================== */
 
 
-/* =========================================================
+/* =====================================================
+   DATA
+===================================================== */
+
+let movies =
+    JSON.parse(
+        localStorage.getItem("nexiumfilms_movies")
+    ) || [];
+
+let series =
+    JSON.parse(
+        localStorage.getItem("nexiumfilms_series")
+    ) || [];
+
+
+/* =====================================================
    GENRES TMDB
-========================================================= */
+===================================================== */
 
 const genreMap = {
 
@@ -45,25 +59,9 @@ const genreMap = {
 };
 
 
-/* =========================================================
-   RECUPERATION DES DONNEES
-========================================================= */
-
-let movies =
-    JSON.parse(
-        localStorage.getItem("nexiumfilms_movies")
-    ) || [];
-
-
-let series =
-    JSON.parse(
-        localStorage.getItem("nexiumfilms_series")
-    ) || [];
-
-
-/* =========================================================
-   ELEMENTS HTML
-========================================================= */
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
 const movieGrid =
     document.getElementById("movieGrid");
@@ -74,372 +72,882 @@ const seriesGrid =
 const searchInput =
     document.getElementById("searchInput");
 
-const searchResultsSection =
-    document.getElementById("searchResultsSection");
-
 const searchResults =
     document.getElementById("searchResults");
 
+const searchResultsSection =
+    document.getElementById(
+        "searchResultsSection"
+    );
+
 const searchResultsTitle =
-    document.getElementById("searchResultsTitle");
+    document.getElementById(
+        "searchResultsTitle"
+    );
+
+const heroBackground =
+    document.getElementById(
+        "heroBackground"
+    );
+
+const heroTitle =
+    document.getElementById(
+        "heroTitle"
+    );
+
+const heroMeta =
+    document.getElementById(
+        "heroMeta"
+    );
+
+const heroGenres =
+    document.getElementById(
+        "heroGenres"
+    );
+
+const heroDescription =
+    document.getElementById(
+        "heroDescription"
+    );
+
+const heroType =
+    document.getElementById(
+        "heroType"
+    );
+
+const heroPlayButton =
+    document.getElementById(
+        "heroPlayButton"
+    );
 
 const playerModal =
-    document.getElementById("playerModal");
+    document.getElementById(
+        "playerModal"
+    );
 
 const videoPlayer =
-    document.getElementById("videoPlayer");
+    document.getElementById(
+        "videoPlayer"
+    );
+
+const closePlayerButton =
+    document.getElementById(
+        "closePlayerButton"
+    );
 
 const seriesControls =
-    document.getElementById("seriesControls");
+    document.getElementById(
+        "seriesControls"
+    );
 
 const seasonSelect =
-    document.getElementById("seasonSelect");
+    document.getElementById(
+        "seasonSelect"
+    );
 
 const episodeSelect =
-    document.getElementById("episodeSelect");
+    document.getElementById(
+        "episodeSelect"
+    );
 
 const playEpisodeButton =
-    document.getElementById("playEpisodeButton");
+    document.getElementById(
+        "playEpisodeButton"
+    );
+
+const themeGrid =
+    document.getElementById(
+        "themeGrid"
+    );
+
+const themeRows =
+    document.getElementById(
+        "themeRows"
+    );
+
+const themeCount =
+    document.getElementById(
+        "themeCount"
+    );
 
 
-/* =========================================================
-   UTILITAIRE HTML
-========================================================= */
+let currentSeries = null;
 
-function escapeHtml(text) {
 
-    if (!text) {
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function getGenres(item) {
+
+    if (
+        item.genreIds &&
+        Array.isArray(item.genreIds)
+    ) {
+
+        return item.genreIds
+            .map(id => genreMap[id])
+            .filter(Boolean);
+
+    }
+
+
+    if (
+        item.genres &&
+        Array.isArray(item.genres)
+    ) {
+
+        return item.genres
+            .map(genre => {
+
+                if (
+                    typeof genre === "string"
+                ) {
+                    return genre;
+                }
+
+                return genre.name || "";
+
+            })
+            .filter(Boolean);
+
+    }
+
+
+    return [];
+}
+
+
+function formatRuntime(minutes) {
+
+    if (!minutes || minutes <= 0) {
         return "";
     }
 
-    return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
+
+    const hours =
+        Math.floor(minutes / 60);
 
 
-/* =========================================================
-   GENRES D'UN FILM
-========================================================= */
+    const mins =
+        minutes % 60;
 
-function getMovieGenres(movie) {
 
-    if (!movie.genreIds) {
-        return [];
+    if (hours === 0) {
+        return mins + " min";
     }
 
-    return movie.genreIds
-        .map(function(id) {
-            return genreMap[id];
-        })
-        .filter(Boolean);
+
+    if (mins === 0) {
+        return hours + "h";
+    }
+
+
+    return hours + "h " + mins + "min";
 }
 
 
-/* =========================================================
-   CREATION CARTE FILM
-========================================================= */
+function getAllMedia() {
 
-function createMovieCard(movie) {
+    return movies.concat(series);
+
+}
+
+
+function getThemeItems(theme) {
+
+    return getAllMedia().filter(
+        item =>
+            getGenres(item).includes(theme)
+    );
+
+}
+
+
+/* =====================================================
+   MOVIE CARD
+===================================================== */
+
+function createMovieCard(item) {
 
     const card =
         document.createElement("div");
 
-    card.className = "movie-card";
-
-    card.onclick = function() {
-
-        openMoviePlayer(movie.id);
-
-    };
-
-
-    const genres =
-        getMovieGenres(movie);
-
-
-    card.innerHTML =
-
-        '<div class="movie-poster-wrapper">' +
-
-            '<img src="' +
-                escapeHtml(movie.poster || "") +
-                '" alt="' +
-                escapeHtml(movie.title) +
-            '">' +
-
-            '<div class="movie-play">' +
-                '▶' +
-            '</div>' +
-
-        '</div>' +
-
-        '<div class="movie-title">' +
-            escapeHtml(movie.title) +
-        '</div>' +
-
-        '<div class="movie-year">' +
-            escapeHtml(movie.year || "") +
-        '</div>' +
-
-        (
-            genres.length > 0
-            ?
-            '<div class="movie-genre">' +
-                escapeHtml(genres.slice(0, 2).join(" • ")) +
-            '</div>'
-            :
-            ""
-        );
-
-
-    return card;
-}
-
-
-/* =========================================================
-   CREATION CARTE SERIE
-========================================================= */
-
-function createSeriesCard(show) {
-
-    const card =
-        document.createElement("div");
 
     card.className =
-        "movie-card series-card";
+        "movie-card";
 
 
-    card.onclick = function() {
-
-        openSeriesPlayer(show);
-
-    };
+    const image =
+        item.poster ||
+        "https://via.placeholder.com/500x750?text=NexiumFilms";
 
 
     const genres =
-        getMovieGenres(show);
+        getGenres(item);
 
 
-    card.innerHTML =
+    const genreText =
+        genres
+            .slice(0, 2)
+            .join(" • ");
 
-        '<div class="movie-poster-wrapper">' +
 
-            '<img src="' +
-                escapeHtml(show.poster || "") +
-                '" alt="' +
-                escapeHtml(show.title) +
-            '">' +
+    card.innerHTML = `
 
-            '<div class="movie-play">' +
-                '▶' +
-            '</div>' +
+        <img
+            src="${escapeHTML(image)}"
+            alt="${escapeHTML(item.title)}"
+            loading="lazy"
+        >
 
-            '<div class="series-badge">' +
-                'SÉRIE' +
-            '</div>' +
+        <div class="type-badge">
+            FILM
+        </div>
 
-        '</div>' +
+        <div class="play-button">
+            ▶
+        </div>
 
-        '<div class="movie-title">' +
-            escapeHtml(show.title) +
-        '</div>' +
+        <div class="movie-info">
 
-        '<div class="movie-year">' +
-            escapeHtml(show.year || "") +
-        '</div>' +
+            <h3>
+                ${escapeHTML(item.title)}
+            </h3>
 
-        (
-            genres.length > 0
-            ?
-            '<div class="movie-genre">' +
-                escapeHtml(genres.slice(0, 2).join(" • ")) +
-            '</div>'
-            :
-            ""
-        );
+            <p>
+                ${escapeHTML(item.year || "")}
+                ${
+                    genreText
+                        ? " • " + escapeHTML(genreText)
+                        : ""
+                }
+            </p>
+
+        </div>
+
+    `;
+
+
+    card.addEventListener(
+        "click",
+        function() {
+
+            openMoviePlayer(item);
+
+        }
+    );
 
 
     return card;
 }
 
 
-/* =========================================================
-   AFFICHER FILMS
-========================================================= */
+/* =====================================================
+   SERIES CARD
+===================================================== */
+
+function createSeriesCard(item) {
+
+    const card =
+        document.createElement("div");
+
+
+    card.className =
+        "movie-card";
+
+
+    const image =
+        item.poster ||
+        "https://via.placeholder.com/500x750?text=NexiumFilms";
+
+
+    const genres =
+        getGenres(item);
+
+
+    const seasons =
+        item.seasons
+            ? item.seasons.length
+            : 0;
+
+
+    card.innerHTML = `
+
+        <img
+            src="${escapeHTML(image)}"
+            alt="${escapeHTML(item.title)}"
+            loading="lazy"
+        >
+
+        <div class="type-badge">
+            SÉRIE
+        </div>
+
+        <div class="play-button">
+            ▶
+        </div>
+
+        <div class="movie-info">
+
+            <h3>
+                ${escapeHTML(item.title)}
+            </h3>
+
+            <p>
+
+                ${escapeHTML(item.year || "")}
+
+                ${
+                    seasons
+                        ? " • " +
+                          seasons +
+                          " saison" +
+                          (
+                              seasons > 1
+                                  ? "s"
+                                  : ""
+                          )
+                        : ""
+                }
+
+            </p>
+
+        </div>
+
+    `;
+
+
+    card.addEventListener(
+        "click",
+        function() {
+
+            openSeriesPlayer(item);
+
+        }
+    );
+
+
+    return card;
+}
+
+
+/* =====================================================
+   DISPLAY FILMS
+===================================================== */
 
 function displayMovies(list) {
 
     movieGrid.innerHTML = "";
 
 
-    if (list.length === 0) {
+    if (!list.length) {
 
         movieGrid.innerHTML =
-            '<div class="empty-message">' +
-                'Aucun film dans ta bibliothèque.' +
-            '</div>';
+            `
+            <div class="empty-library">
+                Aucun film ajouté.
+            </div>
+            `;
 
         return;
     }
 
 
-    list.forEach(function(movie) {
+    list.forEach(movie => {
 
         movieGrid.appendChild(
             createMovieCard(movie)
         );
 
     });
+
 }
 
 
-/* =========================================================
-   AFFICHER SERIES
-========================================================= */
+/* =====================================================
+   DISPLAY SERIES
+===================================================== */
 
 function displaySeries(list) {
 
     seriesGrid.innerHTML = "";
 
 
-    if (list.length === 0) {
+    if (!list.length) {
 
         seriesGrid.innerHTML =
-            '<div class="empty-message">' +
-                'Aucune série dans ta bibliothèque.' +
-            '</div>';
+            `
+            <div class="empty-library">
+                Aucune série ajoutée.
+            </div>
+            `;
 
         return;
     }
 
 
-    list.forEach(function(show) {
+    list.forEach(show => {
 
         seriesGrid.appendChild(
             createSeriesCard(show)
         );
 
     });
+
 }
 
 
-/* =========================================================
-   CATEGORIES
-========================================================= */
+/* =====================================================
+   BUILD THEMES
+===================================================== */
 
-function displayCategories() {
+function getAvailableThemes() {
 
-    const categorySections =
-        document.querySelectorAll(
-            ".category-section"
+    const themes = [];
+
+
+    getAllMedia().forEach(item => {
+
+        getGenres(item).forEach(
+            genre => {
+
+                if (
+                    !themes.includes(genre)
+                ) {
+
+                    themes.push(genre);
+
+                }
+
+            }
+        );
+
+    });
+
+
+    /*
+       On garde l'ordre de notre genreMap.
+       Cela donne une navigation cohérente.
+    */
+
+    const orderedThemes =
+        Object.values(genreMap)
+            .filter(
+                genre =>
+                    themes.includes(genre)
+            );
+
+
+    return orderedThemes;
+
+}
+
+
+/* =====================================================
+   DISPLAY THEMES
+===================================================== */
+
+function displayThemes() {
+
+    themeGrid.innerHTML = "";
+
+    themeRows.innerHTML = "";
+
+
+    const themes =
+        getAvailableThemes();
+
+
+    if (themeCount) {
+
+        themeCount.textContent =
+            themes.length +
+            " THÈME" +
+            (
+                themes.length > 1
+                    ? "S"
+                    : ""
+            );
+
+    }
+
+
+    if (!themes.length) {
+
+        themeGrid.innerHTML =
+            `
+            <div class="empty-library">
+                Ajoute des films ou des séries
+                pour découvrir les thèmes.
+            </div>
+            `;
+
+        return;
+    }
+
+
+    themes.forEach(theme => {
+
+        createThemeCard(theme);
+
+        createThemeSection(theme);
+
+    });
+
+}
+
+
+/* =====================================================
+   THEME CARD
+===================================================== */
+
+function createThemeCard(theme) {
+
+    const items =
+        getThemeItems(theme);
+
+
+    const button =
+        document.createElement("a");
+
+
+    button.className =
+        "theme-card";
+
+
+    button.href =
+        "#theme-" +
+        slugify(theme);
+
+
+    button.innerHTML = `
+
+        <strong>
+            ${escapeHTML(theme)}
+        </strong>
+
+        <small>
+            ${items.length}
+            TITRE${items.length > 1 ? "S" : ""}
+        </small>
+
+    `;
+
+
+    themeGrid.appendChild(button);
+
+}
+
+
+/* =====================================================
+   THEME SECTION
+===================================================== */
+
+function createThemeSection(theme) {
+
+    const items =
+        getThemeItems(theme);
+
+
+    const section =
+        document.createElement("section");
+
+
+    section.className =
+        "theme-section";
+
+
+    section.id =
+        "theme-" +
+        slugify(theme);
+
+
+    const heading =
+        document.createElement("div");
+
+
+    heading.className =
+        "theme-heading";
+
+
+    heading.innerHTML = `
+
+        <h2>
+            ${escapeHTML(theme)}
+        </h2>
+
+        <span>
+            ${items.length}
+            TITRE${items.length > 1 ? "S" : ""}
+        </span>
+
+    `;
+
+
+    const row =
+        document.createElement("div");
+
+
+    row.className =
+        "movie-row";
+
+
+    items.forEach(item => {
+
+        if (
+            item.type === "serie"
+        ) {
+
+            row.appendChild(
+                createSeriesCard(item)
+            );
+
+        } else {
+
+            row.appendChild(
+                createMovieCard(item)
+            );
+
+        }
+
+    });
+
+
+    section.appendChild(
+        heading
+    );
+
+
+    section.appendChild(
+        row
+    );
+
+
+    themeRows.appendChild(
+        section
+    );
+
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+function setupHero() {
+
+    const all =
+        getAllMedia();
+
+
+    if (!all.length) {
+
+        heroTitle.textContent =
+            "Ta bibliothèque.";
+
+
+        heroType.textContent =
+            "NEXIUMFILMS";
+
+
+        heroDescription.textContent =
+            "Ajoute ton premier film depuis l'administration.";
+
+
+        heroBackground.style.backgroundImage =
+            "none";
+
+
+        heroPlayButton.disabled =
+            true;
+
+
+        return;
+    }
+
+
+    const item =
+        all[0];
+
+
+    heroTitle.textContent =
+        item.title ||
+        "NexiumFilms";
+
+
+    heroType.textContent =
+        item.type === "serie"
+            ? "SÉRIE"
+            : "FILM";
+
+
+    heroDescription.textContent =
+        item.overview ||
+        "Découvre ce titre dans ta bibliothèque.";
+
+
+    if (
+        item.backdrop ||
+        item.poster
+    ) {
+
+        heroBackground.style.backgroundImage =
+            `url("${item.backdrop || item.poster}")`;
+
+    }
+
+
+    heroMeta.innerHTML = "";
+
+
+    if (item.year) {
+
+        const year =
+            document.createElement("span");
+
+
+        year.textContent =
+            item.year;
+
+
+        heroMeta.appendChild(
+            year
+        );
+
+    }
+
+
+    if (item.runtime) {
+
+        const runtime =
+            document.createElement("span");
+
+
+        runtime.textContent =
+            "• " +
+            formatRuntime(
+                item.runtime
+            );
+
+
+        heroMeta.appendChild(
+            runtime
+        );
+
+    }
+
+
+    if (item.rating) {
+
+        const rating =
+            document.createElement("span");
+
+
+        rating.textContent =
+            "• ⭐ " +
+            Number(
+                item.rating
+            ).toFixed(1);
+
+
+        heroMeta.appendChild(
+            rating
+        );
+
+    }
+
+
+    heroGenres.innerHTML = "";
+
+
+    getGenres(item)
+        .slice(0, 4)
+        .forEach(
+            genre => {
+
+                const element =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                element.className =
+                    "hero-genre";
+
+
+                element.textContent =
+                    genre;
+
+
+                heroGenres.appendChild(
+                    element
+                );
+
+            }
         );
 
 
-    categorySections.forEach(function(section) {
-
-        const category =
-            section.dataset.category;
-
-        const container =
-            document.getElementById(
-                "category-" + category
-            );
+    heroPlayButton.disabled =
+        false;
 
 
-        if (!container) {
-            return;
-        }
+    heroPlayButton.onclick =
+        function() {
 
+            if (
+                item.type === "serie"
+            ) {
 
-        container.innerHTML = "";
-
-
-        /*
-         On affiche films ET séries
-         dans les catégories.
-        */
-
-        const matchingMovies =
-            movies.filter(function(movie) {
-
-                return getMovieGenres(movie)
-                    .includes(category);
-
-            });
-
-
-        const matchingSeries =
-            series.filter(function(show) {
-
-                return getMovieGenres(show)
-                    .includes(category);
-
-            });
-
-
-        const all =
-            matchingMovies.concat(
-                matchingSeries
-            );
-
-
-        if (all.length === 0) {
-
-            container.innerHTML =
-                '<div class="empty-category">' +
-                    'Aucun contenu dans cette catégorie.' +
-                '</div>';
-
-            return;
-        }
-
-
-        all.forEach(function(item) {
-
-            if (item.type === "serie") {
-
-                container.appendChild(
-                    createSeriesCard(item)
+                openSeriesPlayer(
+                    item
                 );
 
             } else {
 
-                container.appendChild(
-                    createMovieCard(item)
+                openMoviePlayer(
+                    item
                 );
 
             }
 
-        });
+        };
 
-    });
 }
 
 
-/* =========================================================
-   LECTURE FILM
-========================================================= */
+/* =====================================================
+   MOVIE PLAYER
+===================================================== */
 
-async function openMoviePlayer(tmdbId) {
+async function openMoviePlayer(item) {
+
+    seriesControls.classList.add(
+        "hidden"
+    );
+
+
+    playerModal.classList.add(
+        "active"
+    );
+
+
+    videoPlayer.src = "";
+
 
     try {
 
         const response =
             await fetch(
                 "https://vidzy.org/api/" +
-                tmdbId
+                item.id
             );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "Erreur Vidzy HTTP " +
-                response.status
+                "Vidzy indisponible"
             );
 
         }
@@ -449,203 +957,116 @@ async function openMoviePlayer(tmdbId) {
             await response.json();
 
 
-        console.log(
-            "Réponse Vidzy :",
-            data
-        );
+        if (!data.embed) {
 
-
-        if (!data.available) {
-
-            alert(
-                "Ce film n'est pas disponible sur Vidzy."
+            throw new Error(
+                "Aucun lecteur disponible"
             );
 
-            return;
         }
 
-
-        const embedUrl =
-            data.embed ||
-            data.embed_url ||
-            data.embedUrl ||
-            data.url;
-
-
-        if (!embedUrl) {
-
-            alert(
-                "Vidzy n'a fourni aucune URL de lecture."
-            );
-
-            return;
-        }
-
-
-        /*
-         On cache les contrôles série.
-        */
-
-        seriesControls.classList.add(
-            "hidden"
-        );
-
-
-        /*
-         On affiche le lecteur.
-        */
 
         videoPlayer.src =
-            embedUrl +
+            data.embed +
             (
-                embedUrl.includes("?")
-                ? "&"
-                : "?"
+                data.embed.includes("?")
+                    ? "&"
+                    : "?"
             ) +
             "autoplay=1";
 
+    }
+    catch (error) {
 
-        playerModal.classList.add(
-            "active"
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Erreur Vidzy :",
-            error
-        );
+        console.error(error);
 
 
-        alert(
-            "Impossible de lancer le film.\n\n" +
-            error.message
-        );
+        videoPlayer.src =
+            "https://vidzy.org/movie/" +
+            item.id +
+            "?autoplay=1";
 
     }
 
 }
 
 
-/* =========================================================
-   OUVRIR SERIE
-========================================================= */
+/* =====================================================
+   SERIES PLAYER
+===================================================== */
 
-async function openSeriesPlayer(show) {
+function openSeriesPlayer(item) {
 
-    /*
-     On affiche les contrôles.
-    */
-
-    seriesControls.classList.remove(
-        "hidden"
-    );
-
-
-    /*
-     On récupère les saisons TMDB.
-    */
-
-    try {
-
-        const response =
-            await fetch(
-                "https://api.themoviedb.org/3/tv/" +
-                show.id
-            );
-
-
-        /*
-         IMPORTANT :
-
-         Cette partie nécessite ton token TMDB.
-         Pour éviter de mettre le token public
-         dans le site principal, on va récupérer
-         les infos déjà stockées dans l'admin.
-
-         Si seasons est déjà présent :
-         on l'utilise.
-        */
-
-
-        if (
-            show.seasons &&
-            show.seasons.length > 0
-        ) {
-
-            setupSeriesControls(
-                show
-            );
-
-        } else {
-
-            /*
-             Fallback :
-             on essaie quand même avec saison 1.
-            */
-
-            setupSeriesControls(
-                show
-            );
-
-        }
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        setupSeriesControls(
-            show
-        );
-
-    }
+    currentSeries =
+        item;
 
 
     playerModal.classList.add(
         "active"
     );
 
+
+    seriesControls.classList.remove(
+        "hidden"
+    );
+
+
+    videoPlayer.src = "";
+
+
+    setupSeriesControls(
+        item
+    );
+
 }
 
 
-/* =========================================================
-   CONTROLES SERIE
-========================================================= */
-
-function setupSeriesControls(show) {
+function setupSeriesControls(item) {
 
     seasonSelect.innerHTML = "";
 
-    episodeSelect.innerHTML = "";
+
+    const seasons =
+        item.seasons || [];
 
 
-    /*
-     Si les saisons sont stockées.
-    */
+    if (!seasons.length) {
 
-    if (
-        show.seasons &&
-        show.seasons.length > 0
-    ) {
+        const option =
+            document.createElement(
+                "option"
+            );
 
-        show.seasons.forEach(function(season) {
 
-            /*
-             On ignore les specials
-             saison 0.
-            */
+        option.value =
+            "1";
 
-            if (
-                season.season_number === 0
-            ) {
-                return;
-            }
 
+        option.textContent =
+            "Saison 1";
+
+
+        seasonSelect.appendChild(
+            option
+        );
+
+
+        loadEpisodesForSelectedSeason(
+            item
+        );
+
+
+        return;
+    }
+
+
+    seasons.forEach(
+        season => {
 
             const option =
-                document.createElement("option");
+                document.createElement(
+                    "option"
+                );
 
 
             option.value =
@@ -653,297 +1074,213 @@ function setupSeriesControls(show) {
 
 
             option.textContent =
+                season.name ||
                 "Saison " +
                 season.season_number;
-
-
-            option.dataset.episodeCount =
-                season.episode_count || 0;
 
 
             seasonSelect.appendChild(
                 option
             );
 
-        });
-
-    } else {
-
-        /*
-         Fallback si aucune saison
-         n'a été récupérée.
-        */
-
-        const option =
-            document.createElement("option");
-
-        option.value = "1";
-        option.textContent = "Saison 1";
-
-        seasonSelect.appendChild(
-            option
-        );
-
-    }
-
-
-    loadEpisodesForSelectedSeason(
-        show
+        }
     );
 
 
-    seasonSelect.onchange =
-        function() {
-
-            loadEpisodesForSelectedSeason(
-                show
-            );
-
-        };
-
-
-    playEpisodeButton.onclick =
-        function() {
-
-            playSelectedEpisode(
-                show
-            );
-
-        };
+    loadEpisodesForSelectedSeason(
+        item
+    );
 
 }
 
 
-/* =========================================================
-   CHARGER EPISODES
-========================================================= */
-
-async function loadEpisodesForSelectedSeason(show) {
-
-    const season =
-        parseInt(
-            seasonSelect.value
-        );
-
+function loadEpisodesForSelectedSeason(
+    item
+) {
 
     episodeSelect.innerHTML = "";
 
 
-    /*
-     Si les épisodes sont déjà stockés.
-    */
+    const seasonNumber =
+        Number(
+            seasonSelect.value
+        );
 
-    const storedSeason =
-        (show.seasons || [])
-            .find(function(item) {
 
-                return item.season_number === season;
-
-            });
+    const season =
+        (item.seasons || [])
+            .find(
+                s =>
+                    Number(
+                        s.season_number
+                    ) === seasonNumber
+            );
 
 
     if (
-        storedSeason &&
-        storedSeason.episodes
+        season &&
+        season.episodes
     ) {
 
-        storedSeason.episodes.forEach(
-            function(episode) {
+        season.episodes.forEach(
+            episode => {
 
-                addEpisodeOption(
-                    episode
-                );
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    episode.episode_number;
+
+
+                option.textContent =
+                    "Épisode " +
+                    episode.episode_number +
+                    (
+                        episode.name
+                            ? " — " +
+                              episode.name
+                            : ""
+                    );
+
+
+                episodeSelect
+                    .appendChild(
+                        option
+                    );
 
             }
         );
 
+
         return;
-    }
-
-
-    /*
-     Sinon, on crée une liste générique
-     basée sur episode_count.
-    */
-
-    let episodeCount =
-        storedSeason
-        ? storedSeason.episode_count
-        : 10;
-
-
-    if (
-        !episodeCount ||
-        episodeCount < 1
-    ) {
-
-        episodeCount = 10;
-
     }
 
 
     for (
         let i = 1;
-        i <= episodeCount;
+        i <= 10;
         i++
     ) {
 
         const option =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
 
 
-        option.value = i;
+        option.value =
+            i;
 
 
         option.textContent =
-            "Épisode " + i;
+            "Épisode " +
+            i;
 
 
-        episodeSelect.appendChild(
-            option
-        );
+        episodeSelect
+            .appendChild(
+                option
+            );
 
     }
 
 }
 
 
-/* =========================================================
-   AJOUT OPTION EPISODE
-========================================================= */
+function playSelectedEpisode() {
 
-function addEpisodeOption(episode) {
+    if (!currentSeries) {
+        return;
+    }
 
-    const option =
-        document.createElement("option");
-
-
-    option.value =
-        episode.episode_number;
-
-
-    option.textContent =
-        "Épisode " +
-        episode.episode_number +
-        (
-            episode.name
-            ?
-            " — " + episode.name
-            :
-            ""
-        );
-
-
-    episodeSelect.appendChild(
-        option
-    );
-
-}
-
-
-/* =========================================================
-   LIRE EPISODE
-========================================================= */
-
-function playSelectedEpisode(show) {
 
     const season =
-        parseInt(
+        Number(
             seasonSelect.value
         );
 
 
     const episode =
-        parseInt(
+        Number(
             episodeSelect.value
         );
 
 
-    if (
-        !season ||
-        !episode
-    ) {
-
-        alert(
-            "Sélectionne une saison et un épisode."
-        );
-
-        return;
-    }
-
-
-    /*
-     URL officielle Vidzy
-     pour une série :
-     
-     /serie/TMDB_ID/SAISON/EPISODE
-    */
-
-    const embedUrl =
+    videoPlayer.src =
         "https://vidzy.org/serie/" +
-        show.id +
+        currentSeries.id +
         "/" +
         season +
         "/" +
         episode +
         "?autoplay=1&autonext=1";
 
-
-    console.log(
-        "Lecture série :",
-        embedUrl
-    );
-
-
-    videoPlayer.src =
-        embedUrl;
-
 }
 
 
-/* =========================================================
-   FERMER PLAYER
-========================================================= */
+/* =====================================================
+   SERIES EVENTS
+===================================================== */
+
+seasonSelect.addEventListener(
+    "change",
+    function() {
+
+        if (currentSeries) {
+
+            loadEpisodesForSelectedSeason(
+                currentSeries
+            );
+
+        }
+
+    }
+);
+
+
+playEpisodeButton.addEventListener(
+    "click",
+    playSelectedEpisode
+);
+
+
+/* =====================================================
+   CLOSE PLAYER
+===================================================== */
 
 function closePlayer() {
-
-    videoPlayer.src = "";
-
 
     playerModal.classList.remove(
         "active"
     );
 
 
-    seriesControls.classList.add(
-        "hidden"
-    );
+    videoPlayer.src =
+        "";
+
+
+    currentSeries =
+        null;
 
 }
 
 
-/* =========================================================
-   BOUTON FERMER
-========================================================= */
+closePlayerButton.addEventListener(
+    "click",
+    closePlayer
+);
 
-document
-    .getElementById("closePlayerButton")
-    .addEventListener(
-        "click",
-        closePlayer
-    );
-
-
-/* =========================================================
-   FERMER EN CLIQUANT EN DEHORS
-========================================================= */
 
 playerModal.addEventListener(
     "click",
     function(event) {
 
         if (
-            event.target === playerModal
+            event.target ===
+            playerModal
         ) {
 
             closePlayer();
@@ -954,212 +1291,241 @@ playerModal.addEventListener(
 );
 
 
-/* =========================================================
-   RECHERCHE
-========================================================= */
+document.addEventListener(
+    "keydown",
+    function(event) {
 
-function searchFilms() {
+        if (
+            event.key ===
+            "Escape"
+        ) {
 
-    const value =
-        searchInput.value
-            .trim()
-            .toLowerCase();
-
-
-    if (!value) {
-
-        searchResultsSection.classList.add(
-            "hidden"
-        );
-
-        displayMovies(movies);
-        displaySeries(series);
-        displayCategories();
-
-        return;
-    }
-
-
-    const movieResults =
-        movies.filter(function(movie) {
-
-            return movie.title
-                .toLowerCase()
-                .includes(value);
-
-        });
-
-
-    const seriesResults =
-        series.filter(function(show) {
-
-            return show.title
-                .toLowerCase()
-                .includes(value);
-
-        });
-
-
-    searchResults.innerHTML = "";
-
-
-    searchResultsTitle.textContent =
-        "Résultats pour : " +
-        searchInput.value;
-
-
-    searchResultsSection.classList.remove(
-        "hidden"
-    );
-
-
-    movieResults.forEach(
-        function(movie) {
-
-            searchResults.appendChild(
-                createMovieCard(movie)
-            );
+            closePlayer();
 
         }
-    );
-
-
-    seriesResults.forEach(
-        function(show) {
-
-            searchResults.appendChild(
-                createSeriesCard(show)
-            );
-
-        }
-    );
-
-
-    if (
-        movieResults.length === 0 &&
-        seriesResults.length === 0
-    ) {
-
-        searchResults.innerHTML =
-            '<div class="empty-message">' +
-                'Aucun résultat.' +
-            '</div>';
 
     }
-
-}
-
-
-/* =========================================================
-   INPUT RECHERCHE
-========================================================= */
-
-searchInput.addEventListener(
-    "input",
-    searchFilms
 );
 
 
-/* =========================================================
-   HERO
-========================================================= */
+/* =====================================================
+   SEARCH
+===================================================== */
 
-function setupHero() {
+searchInput.addEventListener(
+    "input",
+    function() {
 
-    const allContent =
-        movies.concat(series);
-
-
-    if (allContent.length === 0) {
-        return;
-    }
-
-
-    const featured =
-        allContent[0];
+        const query =
+            searchInput.value
+                .trim()
+                .toLowerCase();
 
 
-    const heroTitle =
-        document.getElementById(
-            "heroTitle"
-        );
+        if (!query) {
+
+            searchResultsSection
+                .classList
+                .add("hidden");
 
 
-    const heroBackground =
-        document.getElementById(
-            "heroBackground"
-        );
+            return;
+
+        }
 
 
-    if (heroTitle) {
-
-        heroTitle.innerHTML =
-            escapeHtml(
-                featured.title
-            );
-
-    }
+        const all =
+            getAllMedia();
 
 
-    if (
-        heroBackground &&
-        featured.poster
-    ) {
+        const results =
+            all.filter(
+                item => {
 
-        heroBackground.style.backgroundImage =
-            "url('" +
-            featured.poster +
-            "')";
-
-    }
-
-
-    const heroPlayButton =
-        document.getElementById(
-            "heroPlayButton"
-        );
+                    const title =
+                        (
+                            item.title ||
+                            ""
+                        )
+                        .toLowerCase();
 
 
-    if (heroPlayButton) {
+                    const genres =
+                        getGenres(item)
+                            .join(" ")
+                            .toLowerCase();
 
-        heroPlayButton.onclick =
-            function() {
 
-                if (
-                    featured.type === "serie"
-                ) {
-
-                    openSeriesPlayer(
-                        featured
-                    );
-
-                } else {
-
-                    openMoviePlayer(
-                        featured.id
+                    return (
+                        title.includes(
+                            query
+                        ) ||
+                        genres.includes(
+                            query
+                        )
                     );
 
                 }
+            );
 
-            };
+
+        searchResultsSection
+            .classList
+            .remove("hidden");
+
+
+        searchResultsTitle.textContent =
+            results.length +
+            " résultat" +
+            (
+                results.length > 1
+                    ? "s"
+                    : ""
+            );
+
+
+        searchResults.innerHTML =
+            "";
+
+
+        results.forEach(
+            item => {
+
+                searchResults.appendChild(
+
+                    item.type === "serie"
+                        ? createSeriesCard(item)
+                        : createMovieCard(item)
+
+                );
+
+            }
+        );
 
     }
+);
+
+
+/* =====================================================
+   NAVBAR ACTIVE
+===================================================== */
+
+function setupNavigation() {
+
+    const links =
+        document.querySelectorAll(
+            "nav a"
+        );
+
+
+    links.forEach(
+        link => {
+
+            link.addEventListener(
+                "click",
+                function() {
+
+                    links.forEach(
+                        other =>
+                            other.classList.remove(
+                                "active"
+                            )
+                    );
+
+
+                    link.classList.add(
+                        "active"
+                    );
+
+                }
+            );
+
+        }
+    );
 
 }
 
 
-/* =========================================================
-   INITIALISATION
-========================================================= */
+setupNavigation();
+
+
+/* =====================================================
+   SLUG
+===================================================== */
+
+function slugify(value) {
+
+    return String(value)
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .toLowerCase()
+        .replace(
+            /[^a-z0-9]+/g,
+            "-"
+        )
+        .replace(
+            /^-+|-+$/g,
+            "");
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(
+        value || ""
+    )
+    .replace(
+        /[&<>"']/g,
+        function(character) {
+
+            const entities = {
+
+                "&": "&amp;",
+
+                "<": "&lt;",
+
+                ">": "&gt;",
+
+                '"': "&quot;",
+
+                "'": "&#039;"
+
+            };
+
+
+            return entities[
+                character
+            ];
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   INIT
+===================================================== */
 
 displayMovies(
     movies
 );
 
+
 displaySeries(
     series
 );
 
-displayCategories();
+
+displayThemes();
+
 
 setupHero();
