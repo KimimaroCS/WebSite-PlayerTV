@@ -2,82 +2,39 @@
 <html lang="fr">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NexiumFilms</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-
-<!-- =====================================================
-     NAVBAR
-===================================================== -->
-
 <header class="navbar">
-
     <div class="navbar-inner">
-
-        <a
-            href="#"
-            class="logo"
-        >
-            NEXIUM<span>FILMS</span>
-        </a>
-
+        <a href="#" class="logo">NEXIUM<span>FILMS</span></a>
 
         <nav>
-
-            <a
-                href="#"
-                class="active"
-            >
-                Accueil
-            </a>
-
-            <a href="#films">
-                Films
-            </a>
-
-            <a href="#series">
-                Séries
-            </a>
-
-            <a href="#themes">
-                Thèmes
-            </a>
-
+            <a href="#" class="active" data-nav="home">Accueil</a>
+            <a href="#films" data-nav="films">Films</a>
+            <a href="#series" data-nav="series">Séries</a>
+            <a href="#anime" data-nav="anime">Anime</a>
+            <a href="#themes" data-nav="themes">Thèmes</a>
         </nav>
 
-
         <div class="navbar-actions">
-
             <div class="search">
-
-                <span>⌕</span>
-
+                <span aria-hidden="true">⌕</span>
                 <input
                     id="searchInput"
                     type="text"
-                    placeholder="Rechercher..."
+                    placeholder="Titres, genres…"
                     autocomplete="off"
                 >
-
             </div>
-
 
             <a
                 href="login.html"
@@ -85,366 +42,140 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Administration"
-            >
-                ⚙
-            </a>
-
+            >⚙</a>
         </div>
-
     </div>
-
 </header>
 
-
-
-<!-- =====================================================
-     HERO
-===================================================== -->
-
 <section class="hero">
-
-    <div
-        id="heroBackground"
-        class="hero-background"
-    ></div>
-
+    <div id="heroBackground" class="hero-background"></div>
     <div class="hero-dark"></div>
-
     <div class="hero-bottom"></div>
 
-
     <div class="hero-content">
-
-        <div
-            id="heroType"
-            class="hero-type"
-        >
-            À L'AFFICHE
-        </div>
-
-
-        <h1 id="heroTitle">
-            NexiumFilms
-        </h1>
-
-
-        <div
-            id="heroMeta"
-            class="hero-meta"
-        ></div>
-
-
-        <div
-            id="heroGenres"
-            class="hero-genres"
-        ></div>
-
-
+        <div class="hero-brand">NEXIUMFILMS</div>
+        <div id="heroType" class="hero-type">À L'AFFICHE</div>
+        <h1 id="heroTitle">Ta bibliothèque.</h1>
+        <div id="heroMeta" class="hero-meta"></div>
+        <div id="heroGenres" class="hero-genres"></div>
         <p id="heroDescription">
-            Bienvenue dans ta bibliothèque cinéma.
+            Films, séries et anime — un lecteur, une vibe Netflix.
         </p>
-
-
         <div class="hero-buttons">
-
-            <button
-                id="heroPlayButton"
-                class="btn-primary"
-            >
+            <button id="heroPlayButton" class="btn-primary" disabled>
                 ▶ Regarder
             </button>
-
-
-            <button
-                id="heroInfoButton"
-                class="btn-secondary"
-            >
-                ⓘ Informations
-            </button>
-
+            <a href="#films" class="btn-secondary">Parcourir</a>
         </div>
-
     </div>
-
 </section>
 
-
-
-<!-- =====================================================
-     SEARCH RESULTS
-===================================================== -->
-
-<section
-    id="searchResultsSection"
-    class="section search-results hidden"
->
-
+<section id="searchResultsSection" class="section search-results hidden">
     <div class="section-title">
-
         <div>
-
-            <span>
-                RECHERCHE
-            </span>
-
-            <h2 id="searchResultsTitle">
-                Résultats
-            </h2>
-
+            <span>RECHERCHE</span>
+            <h2 id="searchResultsTitle">Résultats</h2>
         </div>
-
     </div>
-
-
-    <div
-        id="searchResults"
-        class="movie-grid"
-    ></div>
-
+    <div id="searchResults" class="media-row"></div>
 </section>
-
-
-
-<!-- =====================================================
-     COLLECTION
-===================================================== -->
 
 <main>
-
-
-<!-- =====================================================
-     FILMS
-===================================================== -->
-
-<section
-    id="films"
-    class="section"
->
-
-    <div class="section-title">
-
-        <div>
-
-            <span>
-                COLLECTION
-            </span>
-
-            <h2>
-                Films
-            </h2>
-
+    <section id="films" class="section">
+        <div class="section-title">
+            <div>
+                <span>COLLECTION</span>
+                <h2>Films</h2>
+            </div>
+            <span id="movieCount" class="section-small">0 TITRE</span>
         </div>
-
-
-        <span class="section-small">
-            TA BIBLIOTHÈQUE
-        </span>
-
-    </div>
-
-
-    <div
-        id="movieGrid"
-        class="movie-grid"
-    ></div>
-
-</section>
-
-
-
-<!-- =====================================================
-     SERIES
-===================================================== -->
-
-<section
-    id="series"
-    class="section"
->
-
-    <div class="section-title">
-
-        <div>
-
-            <span>
-                COLLECTION
-            </span>
-
-            <h2>
-                Séries
-            </h2>
-
+        <div class="row-shell">
+            <button class="row-nav prev" data-row="movieGrid" aria-label="Précédent">‹</button>
+            <div id="movieGrid" class="media-row"></div>
+            <button class="row-nav next" data-row="movieGrid" aria-label="Suivant">›</button>
         </div>
+    </section>
 
-
-        <span class="section-small">
-            TA BIBLIOTHÈQUE
-        </span>
-
-    </div>
-
-
-    <div
-        id="seriesGrid"
-        class="movie-grid"
-    ></div>
-
-</section>
-
-
-
-<!-- =====================================================
-     THEMES
-===================================================== -->
-
-<section
-    id="themes"
-    class="section themes-section"
->
-
-    <div class="section-title">
-
-        <div>
-
-            <span>
-                EXPLORER
-            </span>
-
-            <h2>
-                Thèmes
-            </h2>
-
+    <section id="series" class="section">
+        <div class="section-title">
+            <div>
+                <span>COLLECTION</span>
+                <h2>Séries</h2>
+            </div>
+            <span id="seriesCount" class="section-small">0 TITRE</span>
         </div>
+        <div class="row-shell">
+            <button class="row-nav prev" data-row="seriesGrid" aria-label="Précédent">‹</button>
+            <div id="seriesGrid" class="media-row"></div>
+            <button class="row-nav next" data-row="seriesGrid" aria-label="Suivant">›</button>
+        </div>
+    </section>
 
+    <section id="anime" class="section">
+        <div class="section-title">
+            <div>
+                <span>COLLECTION</span>
+                <h2>Anime</h2>
+            </div>
+            <span id="animeCount" class="section-small">0 TITRE</span>
+        </div>
+        <div class="row-shell">
+            <button class="row-nav prev" data-row="animeGrid" aria-label="Précédent">‹</button>
+            <div id="animeGrid" class="media-row"></div>
+            <button class="row-nav next" data-row="animeGrid" aria-label="Suivant">›</button>
+        </div>
+    </section>
 
-        <span
-            id="themeCount"
-            class="section-small"
-        >
-            0 THÈME
-        </span>
+    <section id="themes" class="section themes-section">
+        <div class="section-title">
+            <div>
+                <span>EXPLORER</span>
+                <h2>Thèmes</h2>
+            </div>
+            <span id="themeCount" class="section-small">0 THÈME</span>
+        </div>
+        <div id="themeGrid" class="theme-grid"></div>
+    </section>
 
-    </div>
-
-
-    <!-- Les thèmes seront créés automatiquement par JS -->
-
-    <div
-        id="themeGrid"
-        class="theme-grid"
-    ></div>
-
-</section>
-
-
-
-<!-- =====================================================
-     THEME ROWS
-===================================================== -->
-
-<div id="themeRows"></div>
-
-
+    <div id="themeRows"></div>
 </main>
 
-
-
-<!-- =====================================================
-     PLAYER
-===================================================== -->
-
-<div
-    id="playerModal"
-    class="modal"
->
-
+<div id="playerModal" class="modal" aria-hidden="true">
     <div class="player-wrapper">
+        <button id="closePlayerButton" class="close-player" aria-label="Fermer">×</button>
 
-
-        <button
-            id="closePlayerButton"
-            class="close-player"
-        >
-            ×
-        </button>
-
-
-        <div
-            id="seriesControls"
-            class="series-controls hidden"
-        >
-
-            <div>
-
-                <label>
-                    SAISON
-                </label>
-
+        <div id="episodeControls" class="episode-controls hidden">
+            <div id="seasonControl" class="control-field">
+                <label for="seasonSelect">SAISON</label>
                 <select id="seasonSelect"></select>
-
             </div>
-
-
-            <div>
-
-                <label>
-                    ÉPISODE
-                </label>
-
+            <div class="control-field">
+                <label for="episodeSelect">ÉPISODE</label>
                 <select id="episodeSelect"></select>
-
             </div>
-
-
-            <button
-                id="playEpisodeButton"
-            >
-                ▶ LIRE
-            </button>
-
+            <button id="playEpisodeButton">▶ LIRE</button>
         </div>
-
 
         <iframe
             id="videoPlayer"
+            title="Lecteur Vidy"
             src=""
             frameborder="0"
-            allow="autoplay; fullscreen; encrypted-media"
+            allow="encrypted-media; autoplay *; fullscreen *"
             allowfullscreen
         ></iframe>
-
     </div>
-
 </div>
 
-
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
 <footer>
-
-    <div class="footer-logo">
-        NEXIUM<span>FILMS</span>
-    </div>
-
-
-    <p>
-        Ta bibliothèque cinéma personnelle.
-    </p>
-
-
+    <div class="footer-logo">NEXIUM<span>FILMS</span></div>
+    <p>Films · Séries · Anime — lecture via Vidy.st</p>
     <small>
-        This product uses the TMDB API but is not endorsed
-        or certified by TMDB.
+        This product uses the TMDB API but is not endorsed or certified by TMDB.
+        Anime metadata via AniList.
     </small>
-
 </footer>
 
-
-
 <script src="script.js"></script>
-
 </body>
-
 </html>

@@ -1,0 +1,14 @@
+{
+  "name": "nexiumfilms",
+  "private": true,
+  "version": "1.0.0",
+  "description": "NexiumFilms — bibliothèque cinéma personnelle avec lecteur Vidy.st",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 3847",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 3847"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
