@@ -1,16 +1,17 @@
 /* =====================================================
-   NEXIUMFILMS — Films / Séries / Anime + Vidy.st
+   NEXIUMFILMS — Films / Séries / Anime + Frembed (VF)
+   Note: Flemmix n'a pas d'API iframe TMDB publique.
+   Frembed = embed FR (VF/VOSTFR) par ID TMDB.
 ===================================================== */
 
 const STORAGE_KEYS = {
     movies: "nexiumfilms_movies",
     series: "nexiumfilms_series",
     anime: "nexiumfilms_anime",
-    seeded: "nexiumfilms_seeded_v2",
+    seeded: "nexiumfilms_seeded_v3",
 };
 
-const VIDY_BASE = "https://vidy.st";
-const VIDY_COLOR = "E50914";
+const FREMBED_BASE = "https://frembed.click";
 
 const genreMap = {
     28: "Action",
@@ -80,6 +81,19 @@ function seedDemoLibrary() {
 
     movies = [
         {
+            id: 33624,
+            title: "Double zéro",
+            year: "2004",
+            poster: "https://image.tmdb.org/t/p/w500/vCPKGHTiuxg3y7JsWfN0ScoWAQ4.jpg",
+            backdrop: "https://image.tmdb.org/t/p/w1280/vLkWOUeqIt1HBxBwXM9Rg0zGc0X.jpg",
+            overview: "Un missile vient d’être dérobé et la DGSE est sur les dents. Deux agents aussi incompétents l'un que l'autre se retrouvent sur l'affaire.",
+            runtime: 105,
+            rating: 5.8,
+            genreIds: [35, 28],
+            genres: ["Comédie", "Action"],
+            type: "movie",
+        },
+        {
             id: 27205,
             title: "Inception",
             year: "2010",
@@ -92,73 +106,25 @@ function seedDemoLibrary() {
             genres: ["Action", "Science-Fiction", "Aventure"],
             type: "movie",
         },
-        {
-            id: 155,
-            title: "The Dark Knight",
-            year: "2008",
-            poster: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-            backdrop: "https://image.tmdb.org/t/p/w1280/hqkIcbrOHL86UncnHIsHVcVmzue.jpg",
-            overview: "Batman affronte le Joker dans une Gotham au bord du chaos.",
-            runtime: 152,
-            rating: 8.5,
-            genreIds: [28, 80, 18],
-            genres: ["Action", "Crime", "Drame"],
-            type: "movie",
-        },
-        {
-            id: 157336,
-            title: "Interstellar",
-            year: "2014",
-            poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-            backdrop: "https://image.tmdb.org/t/p/w1280/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
-            overview: "Des explorateurs franchissent un trou de ver pour sauver l'humanité.",
-            runtime: 169,
-            rating: 8.4,
-            genreIds: [878, 18, 12],
-            genres: ["Science-Fiction", "Drame", "Aventure"],
-            type: "movie",
-        },
     ];
 
     series = [
         {
-            id: 1396,
-            title: "Breaking Bad",
-            year: "2008",
-            poster: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
-            backdrop: "https://image.tmdb.org/t/p/w1280/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
-            overview: "Un prof de chimie bascule dans le crime pour sécuriser l'avenir de sa famille.",
-            rating: 8.9,
-            genreIds: [18, 80],
-            genres: ["Drame", "Crime"],
+            id: 1399,
+            title: "Game of Thrones",
+            year: "2011",
+            poster: "https://image.tmdb.org/t/p/w500/eRMfekBOnwyE9G0ffyEJIBOjX2n.jpg",
+            backdrop: "https://image.tmdb.org/t/p/w1280/zZqpAXxVSBtxV9qPBcscfXBcL2w.jpg",
+            overview: "Il y a très longtemps, à une époque oubliée, une force a détruit l'équilibre des saisons. Les familles nobles se disputent le Trône de Fer.",
+            rating: 8.5,
+            genreIds: [18, 10765],
+            genres: ["Drame", "Fantastique"],
             type: "serie",
             seasons: [
                 {
                     season_number: 1,
                     name: "Saison 1",
-                    episodes: Array.from({ length: 7 }, (_, i) => ({
-                        episode_number: i + 1,
-                        name: "Épisode " + (i + 1),
-                    })),
-                },
-            ],
-        },
-        {
-            id: 66732,
-            title: "Stranger Things",
-            year: "2016",
-            poster: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
-            backdrop: "https://image.tmdb.org/t/p/w1280/56v2KjBlU4XaOv9rVYEQypAEIE5.jpg",
-            overview: "À Hawkins, un monde parallèle menace une bande d'amis.",
-            rating: 8.6,
-            genreIds: [18, 10765, 9648],
-            genres: ["Drame", "Mystère"],
-            type: "serie",
-            seasons: [
-                {
-                    season_number: 1,
-                    name: "Saison 1",
-                    episodes: Array.from({ length: 8 }, (_, i) => ({
+                    episodes: Array.from({ length: 10 }, (_, i) => ({
                         episode_number: i + 1,
                         name: "Épisode " + (i + 1),
                     })),
@@ -169,40 +135,26 @@ function seedDemoLibrary() {
 
     anime = [
         {
-            id: 16498,
-            title: "Attack on Titan",
-            year: "2013",
-            poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-C6FPmWmNAAmO.jpg",
-            backdrop: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/16498-8jpFCMsnvyPt.jpg",
-            overview: "L'humanité survit derrière des murs face à des titans dévoreurs.",
-            rating: 8.5,
-            episodeCount: 25,
-            genres: ["Action", "Drame", "Fantastique"],
-            type: "anime",
-        },
-        {
-            id: 101922,
-            title: "Demon Slayer",
-            year: "2019",
-            poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101922-PEn1CTc93blf.jpg",
-            backdrop: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/101922-YfwMiPlnJsYx.jpg",
-            overview: "Tanjiro devient pourfendeur de démons pour sauver sa sœur.",
-            rating: 8.5,
-            episodeCount: 26,
-            genres: ["Action", "Aventure", "Fantastique"],
-            type: "anime",
-        },
-        {
-            id: 21,
-            title: "One Piece",
-            year: "1999",
-            poster: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/nx21-tXMN3Y33qgO5.jpg",
-            backdrop: "https://s4.anilist.co/file/anilistcdn/media/anime/banner/21-wf37VekZmKba.jpg",
-            overview: "Luffy et son équipage cherchent le One Piece au bout des mers.",
-            rating: 8.7,
+            id: 46260,
+            title: "Naruto",
+            year: "2002",
+            poster: "https://image.tmdb.org/t/p/w500/mLoI2Zto2JYUvSB8PpqvZIV7vWj.jpg",
+            backdrop: "https://image.tmdb.org/t/p/w1280/5F0HVEgkgP99fEWDjPyikGt9jQi.jpg",
+            overview: "Dans le village de Konoha vit Naruto, un jeune garçon détesté et craint des villageois. Il rêve de devenir Hokage.",
+            rating: 8.4,
             episodeCount: 20,
-            genres: ["Action", "Aventure", "Comédie"],
+            genres: ["Animation", "Action", "Aventure"],
             type: "anime",
+            seasons: [
+                {
+                    season_number: 1,
+                    name: "Saison 1",
+                    episodes: Array.from({ length: 20 }, (_, i) => ({
+                        episode_number: i + 1,
+                        name: "Épisode " + (i + 1),
+                    })),
+                },
+            ],
         },
     ];
 
@@ -284,54 +236,24 @@ function setCountLabel(el, count, singular) {
 }
 
 /* =====================================================
-   VIDY.ST
+   FREMBED (VF / VOSTFR) — IDs TMDB
 ===================================================== */
 
-function withVidyParams(extra) {
+function buildFrembedMovieUrl(tmdbId) {
+    return (
+        FREMBED_BASE +
+        "/api/film.php?id=" +
+        encodeURIComponent(tmdbId)
+    );
+}
+
+function buildFrembedSerieUrl(tmdbId, season, episode) {
     const params = new URLSearchParams({
-        color: VIDY_COLOR,
-        autoplay: "true",
-        ...extra,
+        id: String(tmdbId),
+        sa: String(season || 1),
+        epi: String(episode || 1),
     });
-    return params.toString();
-}
-
-function buildVidyMovieUrl(tmdbId) {
-    return VIDY_BASE + "/movie/" + encodeURIComponent(tmdbId) + "?" + withVidyParams();
-}
-
-function buildVidyTvUrl(tmdbId, season, episode) {
-    return (
-        VIDY_BASE +
-        "/tv/" +
-        encodeURIComponent(tmdbId) +
-        "/" +
-        encodeURIComponent(season) +
-        "/" +
-        encodeURIComponent(episode) +
-        "?" +
-        withVidyParams({
-            nextEpisode: "true",
-            episodeSelector: "true",
-            autoplayNextEpisode: "true",
-        })
-    );
-}
-
-function buildVidyAnimeUrl(anilistId, episode) {
-    return (
-        VIDY_BASE +
-        "/anime/" +
-        encodeURIComponent(anilistId) +
-        "/" +
-        encodeURIComponent(episode) +
-        "?" +
-        withVidyParams({
-            nextEpisode: "true",
-            episodeSelector: "true",
-            autoplayNextEpisode: "true",
-        })
-    );
+    return FREMBED_BASE + "/api/serie.php?" + params.toString();
 }
 
 /* =====================================================
@@ -547,7 +469,7 @@ function openMoviePlayer(item) {
     episodeControls.classList.add("hidden");
     playerModal.classList.add("active");
     playerModal.setAttribute("aria-hidden", "false");
-    videoPlayer.src = buildVidyMovieUrl(item.id);
+    videoPlayer.src = buildFrembedMovieUrl(item.id);
 }
 
 function openSeriesPlayer(item) {
@@ -567,9 +489,16 @@ function openAnimePlayer(item) {
     playerModal.classList.add("active");
     playerModal.setAttribute("aria-hidden", "false");
     episodeControls.classList.remove("hidden");
-    seasonControl.classList.add("hidden");
     videoPlayer.src = "";
-    setupAnimeControls(item);
+
+    // Frembed anime = endpoint série TMDB → saisons si dispo
+    if (item.seasons && item.seasons.length) {
+        seasonControl.classList.remove("hidden");
+        setupSeriesControls(item);
+    } else {
+        seasonControl.classList.add("hidden");
+        setupAnimeControls(item);
+    }
 }
 
 function setupSeriesControls(item) {
@@ -640,13 +569,13 @@ function playSelectedEpisode() {
 
     const episode = Number(episodeSelect.value) || 1;
 
-    if (currentEpisodeKind === "anime") {
-        videoPlayer.src = buildVidyAnimeUrl(currentEpisodeItem.id, episode);
-        return;
-    }
-
     const season = Number(seasonSelect.value) || 1;
-    videoPlayer.src = buildVidyTvUrl(currentEpisodeItem.id, season, episode);
+
+    videoPlayer.src = buildFrembedSerieUrl(
+        currentEpisodeItem.id,
+        season,
+        episode
+    );
 }
 
 function closePlayer() {
@@ -658,7 +587,10 @@ function closePlayer() {
 }
 
 seasonSelect.addEventListener("change", () => {
-    if (currentEpisodeItem && currentEpisodeKind === "serie") {
+    if (
+        currentEpisodeItem &&
+        (currentEpisodeKind === "serie" || currentEpisodeKind === "anime")
+    ) {
         loadEpisodesForSelectedSeason(currentEpisodeItem);
     }
 });

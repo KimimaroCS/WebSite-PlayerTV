@@ -144,19 +144,7 @@ async function searchMedia() {
     results.innerHTML = "";
 
     try {
-        if (type === "anime") {
-            const list = await anilistSearch(query);
-            loading.innerText = list.length + " résultat(s) AniList.";
-
-            if (!list.length) {
-                results.innerHTML = "<p>Aucun résultat.</p>";
-                return;
-            }
-
-            list.forEach((item) => displayAnimeResult(item));
-            return;
-        }
-
+        // Films = /search/movie — Séries & Anime = /search/tv (IDs TMDB pour Frembed)
         const endpoint = type === "movie" ? "/search/movie" : "/search/tv";
         const data = await tmdbFetch(
             endpoint +
@@ -183,12 +171,19 @@ async function searchMedia() {
 
 function displayTmdbResult(item, type) {
     const isMovie = type === "movie";
+    const isAnime = type === "anime";
     const title = isMovie ? item.title : item.name;
     const date = isMovie ? item.release_date : item.first_air_date;
     const year = date ? date.substring(0, 4) : "N/A";
     const poster = item.poster_path
         ? "https://image.tmdb.org/t/p/w500" + item.poster_path
         : "";
+    const label = isMovie ? "FILM" : isAnime ? "ANIME" : "SÉRIE";
+    const buttonLabel = isMovie
+        ? "AJOUTER LE FILM"
+        : isAnime
+          ? "AJOUTER L'ANIME"
+          : "AJOUTER LA SÉRIE";
 
     const div = document.createElement("div");
     div.className = "result";
@@ -200,7 +195,7 @@ function displayTmdbResult(item, type) {
         '">' +
         '<div class="result-info">' +
         '<div class="result-type">' +
-        (isMovie ? "FILM" : "SÉRIE") +
+        label +
         "</div>" +
         '<div class="result-title">' +
         escapeHtml(title) +
@@ -212,48 +207,16 @@ function displayTmdbResult(item, type) {
         item.id +
         "</div>" +
         '<button class="add-button">' +
-        (isMovie ? "AJOUTER LE FILM" : "AJOUTER LA SÉRIE") +
+        buttonLabel +
         "</button>" +
         "</div>";
 
     div.querySelector(".add-button").addEventListener("click", () => {
         if (isMovie) addMovie(item);
+        else if (isAnime) addAnime(item);
         else addSeries(item);
     });
 
-    results.appendChild(div);
-}
-
-function displayAnimeResult(item) {
-    const title =
-        item.title.english || item.title.romaji || item.title.native || "Anime";
-    const year = item.seasonYear || "N/A";
-    const poster = (item.coverImage && item.coverImage.large) || "";
-
-    const div = document.createElement("div");
-    div.className = "result";
-    div.innerHTML =
-        '<img src="' +
-        escapeHtml(poster) +
-        '" alt="' +
-        escapeHtml(title) +
-        '">' +
-        '<div class="result-info">' +
-        '<div class="result-type">ANIME</div>' +
-        '<div class="result-title">' +
-        escapeHtml(title) +
-        "</div>" +
-        '<div class="result-year">' +
-        escapeHtml(String(year)) +
-        (item.episodes ? " · " + item.episodes + " ép." : "") +
-        "</div>" +
-        '<div class="result-id">AniList ID : ' +
-        item.id +
-        "</div>" +
-        '<button class="add-button">AJOUTER L\'ANIME</button>' +
-        "</div>";
-
-    div.querySelector(".add-button").addEventListener("click", () => addAnime(item));
     results.appendChild(div);
 }
 
@@ -351,33 +314,57 @@ async function addSeries(item) {
     }
 }
 
-function addAnime(item) {
+async function addAnime(item) {
     if (anime.some((show) => Number(show.id) === Number(item.id))) {
         alert("Cet anime est déjà dans NexiumFilms.");
         return;
     }
 
-    const title =
-        item.title.english || item.title.romaji || item.title.native || "Anime";
+    loading.innerText = "Récupération de " + item.name + "…";
 
-    anime.push({
-        id: item.id,
-        title: title,
-        originalTitle: item.title.romaji || item.title.native || "",
-        year: item.seasonYear ? String(item.seasonYear) : "",
-        poster: (item.coverImage && item.coverImage.large) || "",
-        backdrop: item.bannerImage || "",
-        overview: stripHtml(item.description || "").slice(0, 400),
-        rating: item.averageScore ? item.averageScore / 10 : 0,
-        episodeCount: item.episodes || 12,
-        genres: item.genres || [],
-        format: item.format || "",
-        type: "anime",
-    });
+    try {
+        const details = await tmdbFetch("/tv/" + item.id + "?language=fr-FR");
+        loading.innerText = "Récupération des saisons de " + details.name + "…";
+        const seasons = await fetchSeriesSeasons(item.id, details.seasons || []);
+        const episodeCount = seasons.reduce(
+            (total, season) =>
+                total + (season.episodes ? season.episodes.length : 0),
+            0
+        );
 
-    persist();
-    alert(title + " a été ajouté !");
-    displayLibraries();
+        anime.push({
+            id: details.id,
+            title: details.name || item.name,
+            originalTitle: details.original_name || "",
+            year: details.first_air_date
+                ? details.first_air_date.substring(0, 4)
+                : "",
+            poster: details.poster_path
+                ? "https://image.tmdb.org/t/p/w500" + details.poster_path
+                : "",
+            backdrop: details.backdrop_path
+                ? "https://image.tmdb.org/t/p/w1280" + details.backdrop_path
+                : "",
+            overview: details.overview || "",
+            rating: details.vote_average || 0,
+            voteCount: details.vote_count || 0,
+            originalLanguage: details.original_language || "",
+            genreIds: details.genres ? details.genres.map((g) => g.id) : [],
+            genres: details.genres ? details.genres.map((g) => g.name) : [],
+            seasons: seasons,
+            episodeCount: episodeCount || 12,
+            type: "anime",
+        });
+
+        persist();
+        loading.innerText = "";
+        alert(details.name + " a été ajouté !");
+        displayLibraries();
+    } catch (error) {
+        console.error(error);
+        loading.innerText = "";
+        alert("Impossible d'ajouter l'anime.\n\n" + error.message);
+    }
 }
 
 async function fetchSeriesSeasons(seriesId, tmdbSeasons) {
@@ -543,7 +530,7 @@ function displayAnimeLibrary() {
             escapeHtml(show.title) +
             "</strong><span>" +
             escapeHtml(show.year || "") +
-            " · AniList " +
+            " · TMDB " +
             show.id +
             " · " +
             (show.episodeCount || "?") +

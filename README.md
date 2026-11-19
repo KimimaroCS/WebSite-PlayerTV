@@ -1,22 +1,17 @@
 # NexiumFilms
 
-Bibliothèque cinéma façon Netflix : **films**, **séries** et **anime**, avec lecture via [Vidy.st](https://www.vidy.st/#playground).
+Bibliothèque cinéma façon Netflix : **films**, **séries** et **anime**, lecture **VF/VOSTFR** via [Frembed](https://frembed.click).
 
-## Lecteur Vidy.st
+> **Flemmix** (flemmix.uno / flemmix.me) n’expose pas d’API iframe par ID TMDB : c’est un catalogue scrapé. **Frembed** est l’API d’embed française équivalente.
 
-| Type | Route |
-|------|--------|
-| Film | `https://vidy.st/movie/{tmdbId}` |
-| Série | `https://vidy.st/tv/{tmdbId}/{season}/{episode}` |
-| Anime | `https://vidy.st/anime/{anilistId}/{episode}` |
+## Lecteur Frembed
 
-Options activées : `color`, `autoplay`, et pour séries/anime `nextEpisode`, `episodeSelector`, `autoplayNextEpisode`.
+| Type | URL |
+|------|-----|
+| Film | `https://frembed.click/api/film.php?id={tmdbId}` |
+| Série / Anime | `https://frembed.click/api/serie.php?id={tmdbId}&sa={saison}&epi={épisode}` |
 
-Iframe requis :
-
-```html
-allow="encrypted-media; autoplay *; fullscreen *"
-```
+Les contrôles saison/épisode du site restent en français. Frembed propose VF / VOSTFR dans le player.
 
 ## Lancer
 
@@ -25,14 +20,14 @@ npm install
 npm run dev
 ```
 
-Ouvre l’URL Vite (port `3847`).
+Port Vite : `3847`.
 
 ## Admin
 
-1. `login.html` → code défini dans `login.js`
-2. Recherche TMDB (films/séries) ou AniList (anime)
-3. Ajoute à la bibliothèque (`localStorage`)
+1. `login.html` → code dans `login.js`
+2. Recherche TMDB (films, séries, anime)
+3. Bibliothèque en `localStorage`
 
 ## Stack
 
-HTML / CSS / JS + Vite. Métadonnées TMDB + AniList. Pas de backend.
+HTML / CSS / JS + Vite. Métadonnées TMDB. Lecteur Frembed.
