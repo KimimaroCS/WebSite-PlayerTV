@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FaceitEsportDiag</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg0: #0b0f0c;
+      --bg1: #121a14;
+      --line: #2a3a2e;
+      --text: #e7efe8;
+      --muted: #8fa396;
+      --accent: #c8f531;
+      --accent-dim: #7a9a1e;
+      --warn: #ff6b4a;
+      --card: rgba(18, 28, 20, 0.72);
+      --glow: rgba(200, 245, 49, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      font-family: "Source Sans 3", system-ui, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 80% -10%, var(--glow), transparent 55%),
+        radial-gradient(900px 500px at -10% 40%, rgba(255, 107, 74, 0.08), transparent 50%),
+        linear-gradient(165deg, var(--bg0), var(--bg1) 45%, #0a100d);
+      background-attachment: fixed;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .wrap {
+      width: min(920px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 4.5rem 0 5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(3.4rem, 10vw, 5.6rem);
+      letter-spacing: 0.04em;
+      line-height: 0.92;
+      color: var(--accent);
+      animation: rise 0.7s ease-out both;
+    }
+
+    .tag {
+      margin-top: 0.85rem;
+      max-width: 36rem;
+      font-size: 1.05rem;
+      color: var(--muted);
+      animation: rise 0.7s ease-out 0.08s both;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.75rem;
+      animation: rise 0.7s ease-out 0.16s both;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      padding: 0.85rem 1.15rem;
+      text-decoration: none;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #10140c;
+    }
+    .btn-primary:hover { background: #d8ff4d; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--line);
+    }
+    .btn-ghost:hover { border-color: var(--accent-dim); }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      padding: 1.25rem 1.35rem 1.4rem;
+      animation: rise 0.65s ease-out both;
+    }
+
+    .panel:nth-child(1) { animation-delay: 0.2s; }
+    .panel:nth-child(2) { animation-delay: 0.28s; }
+    .panel:nth-child(3) { animation-delay: 0.36s; }
+
+    .panel h2 {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+
+    .panel ol, .panel ul {
+      padding-left: 1.15rem;
+      display: grid;
+      gap: 0.45rem;
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .panel li::marker { color: var(--accent-dim); }
+
+    code, .mono {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.86em;
+      color: var(--accent);
+    }
+
+    .warn {
+      margin-top: 0.9rem;
+      padding: 0.75rem 0.85rem;
+      border-left: 3px solid var(--warn);
+      background: rgba(255, 107, 74, 0.08);
+      color: #ffc2b4;
+      font-size: 0.92rem;
+    }
+
+    .manual {
+      margin-top: 1rem;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.3rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    select, textarea, input {
+      width: 100%;
+      background: #0a100d;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.88rem;
+      padding: 0.7rem 0.75rem;
+      outline: none;
+    }
+
+    select:focus, textarea:focus, input:focus {
+      border-color: var(--accent-dim);
+    }
+
+    textarea { min-height: 7rem; resize: vertical; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 1.25rem;
+      transform: translateX(-50%) translateY(120%);
+      background: var(--accent);
+      color: #10140c;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.7rem 1rem;
+      transition: transform 0.25s ease;
+      z-index: 20;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .wrap { padding-top: 2.5rem; }
+      .cta-row { flex-direction: column; }
+      .btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1 class="brand">FaceitEsportDiag</h1>
+    <p class="tag">
+      Collecteur Windows read-only pour un diag CS2 / FACEIT : hardware, Secure Boot / TPM / VBS,
+      moniteur, NIC latency props, GPU, Steam/CS2 cfg, WHEA. Pas de tweak automatique.
+    </p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" id="dl" href="#">Télécharger le .ps1</a>
+      <button class="btn btn-ghost" type="button" id="copyCmd">Copier la commande PowerShell</button>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>01 — Lancer (Admin)</h2>
+        <ol>
+          <li>Télécharge <code>FaceitEsportDiag.ps1</code> (dossier Téléchargements).</li>
+          <li>Clic droit sur <strong>PowerShell → Exécuter en tant qu’administrateur</strong>.</li>
+          <li>Colle puis Entrée :</li>
+        </ol>
+        <p class="mono" style="margin-top:0.85rem;line-height:1.55;word-break:break-all;">
+          Set-ExecutionPolicy -Scope Process Bypass -Force;<br />
+          cd $env:USERPROFILE\Downloads;<br />
+          .\FaceitEsportDiag.ps1
+        </p>
+        <p class="warn">
+          Lecture seule : rien n’est modifié. Admin = TPM / Secure Boot / NIC props plus complets.
+          Un .txt s’ouvre sur le Bureau + Notepad.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>02 — Compléter le ressenti</h2>
+        <p style="color:var(--muted);margin-bottom:0.85rem;font-size:0.95rem;">
+          Le script ne peut pas “sentir” le jeu. Remplis ça, puis colle le rapport + ce bloc dans le chat.
+        </p>
+        <div class="manual">
+          <label>Classe de symptôme
+            <select id="symptom">
+              <option value="A">A — Tearing (image découpée), FPS élevés</option>
+              <option value="B">B — Microstutter / à-coups frametime</option>
+              <option value="C">C — Input lag / sensation molle</option>
+              <option value="D">D — Hitch 0.5–2s (shader/disk/AC)</option>
+              <option value="E" selected>E — Mix tearing + stutter</option>
+            </select>
+          </label>
+          <label>Quand
+            <input id="when" type="text" placeholder="toujours / fights / smokes / round change / après update GPU" />
+          </label>
+          <label>Aussi en offline (bot/DM sans FACEIT) ?
+            <select id="offline">
+              <option value="yes">Oui — même problème offline</option>
+              <option value="no">Non — seulement online / FACEIT</option>
+              <option value="untested">Pas testé</option>
+            </select>
+          </label>
+          <label>Câble / Adaptive Sync / mode CS2
+            <input id="display" type="text" placeholder="DP 1.4 | G-Sync off | fullscreen | 1280x960 @240" />
+          </label>
+          <label>Mesures (AVG / 1% / 0.1% + ping loss choke var)
+            <input id="metrics" type="text" placeholder="420 / 180 / 90 | ping 25 loss 0 choke 0 var 0.3" />
+          </label>
+          <label>Notes opti déjà faits
+            <textarea id="notes" placeholder="ISO/playbook, Process Lasso, IRQ, undervolt, fps_max, Reflex…"></textarea>
+          </label>
+          <button class="btn btn-primary" type="button" id="copyManual">Copier le bloc MANUAL</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>03 — Envoyer</h2>
+        <ul>
+          <li>Complète la section <code>MANUAL</code> dans le .txt (ou utilise le bloc ci-dessus).</li>
+          <li>Colle <strong>tout le rapport</strong> dans le chat Cursor.</li>
+          <li>Diag priorisé ensuite : tearing vs frametime vs AC vs net — plan FACEIT-safe.</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast">Copié</div>
+
+  <script>
+    const toast = document.getElementById("toast");
+    let toastTimer;
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
+    }
+
+    const cmd = `Set-ExecutionPolicy -Scope Process Bypass -Force; cd $env:USERPROFILE\\Downloads; .\\FaceitEsportDiag.ps1`;
+    document.getElementById("copyCmd").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(cmd);
+      showToast("Commande PowerShell copiée");
+    });
+
+    document.getElementById("copyManual").addEventListener("click", async () => {
+      const block = [
+        "MANUAL (UI)",
+        `SymptomClass        : ${document.getElementById("symptom").value}`,
+        `When                : ${document.getElementById("when").value || "____"}`,
+        `OfflineAlso         : ${document.getElementById("offline").value}`,
+        `DisplayStack        : ${document.getElementById("display").value || "____"}`,
+        `Metrics             : ${document.getElementById("metrics").value || "____"}`,
+        `Notes               : ${document.getElementById("notes").value || "____"}`,
+      ].join("\n");
+      await navigator.clipboard.writeText(block);
+      showToast("Bloc MANUAL copié");
+    });
+  </script>
+
+  <script>
+    window.FACEIT_DIAG_PS1 = "#Requires -Version 5.1\n<#\n.SYNOPSIS\n  FaceitEsportDiag \u2014 collecteur hardware / OS / display / GPU / net / CS2 pour diag esport FACEIT.\n.NOTES\n  Lecture seule. Aucune modification syst\u00e8me. Ex\u00e9cuter en Admin recommand\u00e9 (TPM / Secure Boot / drivers).\n  Usage:\n    PowerShell (Admin) :\n      Set-ExecutionPolicy -Scope Process Bypass -Force\n      cd $env:USERPROFILE\\Downloads\n      .\\FaceitEsportDiag.ps1\n#>\n\n$ErrorActionPreference = 'SilentlyContinue'\n$ProgressPreference = 'SilentlyContinue'\n$OutputEncoding = [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()\n\nfunction Section([string]$Title) {\n  \"`r`n==== $Title ====\"\n}\n\nfunction KV([string]$K, $V) {\n  if ($null -eq $V -or ($V -is [string] -and [string]::IsNullOrWhiteSpace($V))) { $V = 'N/A' }\n  if ($V -is [bool]) { $V = if ($V) { 'Yes' } else { 'No' } }\n  '{0,-34}: {1}' -f $K, $V\n}\n\nfunction Try-Cmd([scriptblock]$Block) {\n  try { & $Block } catch { $null }\n}\n\n$stamp = Get-Date -Format 'yyyyMMdd_HHmmss'\n$outDir = Join-Path $env:USERPROFILE 'Desktop'\nif (-not (Test-Path $outDir)) { $outDir = $env:USERPROFILE }\n$outFile = Join-Path $outDir \"FaceitEsportDiag_$stamp.txt\"\n\n$sb = New-Object System.Text.StringBuilder\nfunction Out([string]$Line = '') { [void]$sb.AppendLine($Line) }\n\nOut 'FACEIT ESPORT DIAG \u2014 READ-ONLY SNAPSHOT'\nOut (\"Generated : {0}\" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'))\nOut (\"Host      : {0}\" -f $env:COMPUTERNAME)\nOut (\"User      : {0}\" -f $env:USERNAME)\nOut (\"Admin     : {0}\" -f ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))\nOut (\"PSVersion : {0}\" -f $PSVersionTable.PSVersion)\n\n# --- OS ---\nOut (Section 'OS / BUILD')\n$os = Get-CimInstance Win32_OperatingSystem\n$cs = Get-CimInstance Win32_ComputerSystem\nOut (KV 'Caption' $os.Caption)\nOut (KV 'Version' $os.Version)\nOut (KV 'Build' $os.BuildNumber)\nOut (KV 'DisplayVersion' (Try-Cmd { (Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion').DisplayVersion }))\nOut (KV 'UBR' (Try-Cmd { (Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion').UBR }))\nOut (KV 'InstallDate' $os.InstallDate)\nOut (KV 'LastBoot' $os.LastBootUpTime)\nOut (KV 'SystemType' $os.OSArchitecture)\nOut (KV 'Manufacturer' $cs.Manufacturer)\nOut (KV 'Model' $cs.Model)\n\n# --- FACEIT security posture ---\nOut (Section 'FACEIT SECURITY POSTURE')\n$secureBoot = Try-Cmd { Confirm-SecureBootUEFI }\nOut (KV 'SecureBoot' $secureBoot)\n\n$biosMode = Try-Cmd {\n  $t = bcdedit /enum firmware 2>$null\n  'UEFI-check via msinfo proxy'\n}\n$firmwareType = Try-Cmd { (Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control').PEFirmwareType }\nOut (KV 'PEFirmwareType(1=BIOS,2=UEFI)' $firmwareType)\n\n$tpm = Try-Cmd { Get-Tpm }\nif ($tpm) {\n  Out (KV 'TPM Present' $tpm.TpmPresent)\n  Out (KV 'TPM Ready' $tpm.TpmReady)\n  Out (KV 'TPM Enabled' $tpm.TpmEnabled)\n  Out (KV 'TPM Activated' $tpm.TpmActivated)\n} else {\n  Out (KV 'TPM' 'Get-Tpm unavailable (run as Admin)')\n}\n\n$vbs = Try-Cmd { (Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\\Microsoft\\Windows\\DeviceGuard) }\nif ($vbs) {\n  Out (KV 'SecurityServicesRunning' (($vbs.SecurityServicesRunning) -join ','))\n  Out (KV 'VirtualizationBasedSecurityStatus' $vbs.VirtualizationBasedSecurityStatus)\n  Out (KV 'CodeIntegrityPolicyEnforcementStatus' $vbs.CodeIntegrityPolicyEnforcementStatus)\n}\n\n$hvci = Try-Cmd { (Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity' -ErrorAction SilentlyContinue).Enabled }\nOut (KV 'HVCI/MemoryIntegrity Enabled' $hvci)\n\n$iommu = Try-Cmd { (Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management' -ErrorAction SilentlyContinue).EnableDmaProtection }\nOut (KV 'KernelDMAProtection' (Try-Cmd { (Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard' -ErrorAction SilentlyContinue).EnableVirtualizationBasedSecurity }))\n\n$wu = Try-Cmd { (New-Object -ComObject Microsoft.Update.AutoUpdate).Results.LastInstallationSuccessDate }\nOut (KV 'WU LastSuccess' $wu)\n$wuPause = Try-Cmd { (Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -ErrorAction SilentlyContinue).PauseUpdatesExpiryTime }\nOut (KV 'WU PauseExpiry' $wuPause)\n\n# Device Guard / Credential Guard summary via msinfo fields\n$dg = Try-Cmd { Get-CimInstance -Namespace root\\Microsoft\\Windows\\DeviceGuard -ClassName Win32_DeviceGuard }\nif ($dg) {\n  Out (KV 'AvailableSecurityProperties' (($dg.AvailableSecurityProperties) -join ','))\n  Out (KV 'RequiredSecurityProperties' (($dg.RequiredSecurityProperties) -join ','))\n  Out (KV 'SecurityServicesConfigured' (($dg.SecurityServicesConfigured) -join ','))\n}\n\n# --- CPU ---\nOut (Section 'CPU')\n$cpu = Get-CimInstance Win32_Processor\nforeach ($c in $cpu) {\n  Out (KV 'Name' $c.Name.Trim())\n  Out (KV 'Manufacturer' $c.Manufacturer)\n  Out (KV 'Cores / Logical' (\"{0} / {1}\" -f $c.NumberOfCores, $c.NumberOfLogicalProcessors))\n  Out (KV 'MaxClockMHz' $c.MaxClockSpeed)\n  Out (KV 'L2/L3 Cache KB' (\"{0} / {1}\" -f $c.L2CacheSize, $c.L3CacheSize))\n  Out (KV 'Socket' $c.SocketDesignation)\n  Out (KV 'VirtualizationFirmware' $c.VirtualizationFirmwareEnabled)\n}\n\n# Intel hybrid hint via Get-ComputerInfo / registry\n$procName = ($cpu | Select-Object -First 1).Name\nOut (KV 'HybridHint' $(if ($procName -match '12|13|14|15\\d{3}|Ultra') { 'Likely P+E cores \u2014 check Game Mode / process affinity' } else { 'Unlikely / check manually' }))\n\n# --- MB / BIOS ---\nOut (Section 'MOTHERBOARD / BIOS')\n$bb = Get-CimInstance Win32_BaseBoard\n$bios = Get-CimInstance Win32_BIOS\nOut (KV 'Board' (\"{0} {1}\" -f $bb.Manufacturer, $bb.Product))\nOut (KV 'BIOS Vendor' $bios.Manufacturer)\nOut (KV 'BIOS Version' $bios.SMBIOSBIOSVersion)\nOut (KV 'BIOS Date' $bios.ReleaseDate)\nOut (KV 'Serial (board)' $bb.SerialNumber)\n\n# --- RAM ---\nOut (Section 'MEMORY')\nOut (KV 'TotalGB' ([math]::Round($cs.TotalPhysicalMemory / 1GB, 2)))\n$dimms = Get-CimInstance Win32_PhysicalMemory\n$i = 0\nforeach ($d in $dimms) {\n  $i++\n  Out (KV (\"DIMM{0}\" -f $i) (\"{0} GB | {1} MHz | {2} | {3} | {4}\" -f\n    [math]::Round($d.Capacity / 1GB, 2),\n    $d.ConfiguredClockSpeed,\n    $d.Manufacturer,\n    $d.PartNumber.Trim(),\n    $d.DeviceLocator))\n}\n$speeds = $dimms.ConfiguredClockSpeed | Select-Object -Unique\nOut (KV 'ConfiguredSpeedsMHz' ($speeds -join ', '))\nOut (KV 'ChannelHint' $(if ($dimms.Count -ge 2) { 'Multi-stick present \u2014 verify dual/quad in CPU-Z' } else { 'Single stick?' }))\n\n# --- GPU ---\nOut (Section 'GPU / DISPLAY ADAPTERS')\n$gpus = Get-CimInstance Win32_VideoController\nforeach ($g in $gpus) {\n  Out (KV 'Name' $g.Name)\n  Out (KV 'DriverVersion' $g.DriverVersion)\n  Out (KV 'DriverDate' $g.DriverDate)\n  Out (KV 'VRAM_Bytes' $g.AdapterRAM)\n  Out (KV 'VideoMode' $g.VideoModeDescription)\n  Out (KV 'CurrentHz' $g.CurrentRefreshRate)\n  Out (KV 'MaxHz' $g.MaxRefreshRate)\n  Out (KV 'PNPDeviceID' $g.PNPDeviceID)\n  Out '---'\n}\n\n# NVIDIA / AMD control panel registry hints\nOut (Section 'GPU PROFILE HINTS (REGISTRY)')\n$nvPath = 'HKCU:\\Software\\NVIDIA Corporation\\Global\\NVTweak'\nOut (KV 'NVIDIA NVTweak exists' (Test-Path $nvPath))\n$amd = Test-Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}'\nOut (KV 'AMD class key present' $amd)\n\n# Resizable BAR rough check via NVIDIA Display Container / PCI\n$rebar = Try-Cmd {\n  Get-CimInstance Win32_VideoController | ForEach-Object {\n    $_.GetRelated('Win32_PnPEntity') | Out-Null\n  }\n  'Check GPU-Z Resizable BAR manually if critical'\n}\nOut (KV 'ResizableBAR' 'Verify in GPU-Z / NVIDIA-SMI \u2014 not reliably exposed via WMI')\n\n# --- Monitors ---\nOut (Section 'MONITORS')\n$monWmi = Get-CimInstance -Namespace root\\wmi -ClassName WmiMonitorID\n$i = 0\nforeach ($m in $monWmi) {\n  $i++\n  $name = ($m.UserFriendlyName | Where-Object { $_ -ne 0 } | ForEach-Object { [char]$_ }) -join ''\n  $man = ($m.ManufacturerName | Where-Object { $_ -ne 0 } | ForEach-Object { [char]$_ }) -join ''\n  $serial = ($m.SerialNumberID | Where-Object { $_ -ne 0 } | ForEach-Object { [char]$_ }) -join ''\n  Out (KV (\"Monitor{0}\" -f $i) (\"{0} | {1} | SN:{2} | Active:{3}\" -f $man, $name, $serial, $m.Active))\n}\n\n# CCD / display config via DisplayConfig (basic)\nAdd-Type -TypeDefinition @\"\nusing System;\nusing System.Runtime.InteropServices;\npublic class DisplayHz {\n  [DllImport(\"user32.dll\")]\n  public static extern bool EnumDisplaySettings(string deviceName, int modeNum, ref DEVMODE devMode);\n  [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Ansi)]\n  public struct DEVMODE {\n    [MarshalAs(UnmanagedType.ByValTStr, SizeConst=32)] public string dmDeviceName;\n    public short dmSpecVersion, dmDriverVersion, dmSize, dmDriverExtra;\n    public int dmFields, dmPositionX, dmPositionY, dmDisplayOrientation, dmDisplayFixedOutput;\n    public short dmColor, dmDuplex, dmYResolution, dmTTOption, dmCollate;\n    [MarshalAs(UnmanagedType.ByValTStr, SizeConst=32)] public string dmFormName;\n    public short dmLogPixels;\n    public int dmBitsPerPel, dmPelsWidth, dmPelsHeight, dmDisplayFlags, dmDisplayFrequency, dmICMMethod, dmICMIntent, dmMediaType, dmDitherType, dmReserved1, dmReserved2, dmPanningWidth, dmPanningHeight;\n  }\n}\n\"@ -ErrorAction SilentlyContinue\n\n$dm = New-Object DisplayHz+DEVMODE\n$dm.dmSize = [System.Runtime.InteropServices.Marshal]::SizeOf($dm)\nif ([DisplayHz]::EnumDisplaySettings($null, -1, [ref]$dm)) {\n  Out (KV 'PrimaryMode' (\"{0}x{1} @{2}Hz {3}bpp\" -f $dm.dmPelsWidth, $dm.dmPelsHeight, $dm.dmDisplayFrequency, $dm.dmBitsPerPel))\n}\n\n# --- Storage ---\nOut (Section 'STORAGE')\nGet-CimInstance Win32_DiskDrive | ForEach-Object {\n  Out (KV 'Disk' (\"{0} | {1:N0} GB | {2} | {3}\" -f $_.Model, ($_.Size/1GB), $_.InterfaceType, $_.MediaType))\n}\nGet-CimInstance Win32_LogicalDisk -Filter \"DriveType=3\" | ForEach-Object {\n  Out (KV (\"Volume {0}\" -f $_.DeviceID) (\"Free {0:N1}/{1:N1} GB | {2}\" -f ($_.FreeSpace/1GB), ($_.Size/1GB), $_.FileSystem))\n}\n\n# --- Network ---\nOut (Section 'NETWORK ADAPTERS')\nGet-NetAdapter | Where-Object { $_.Status -ne $null } | ForEach-Object {\n  Out (KV $_.Name (\"{0} | {1} | {2} | {3}\" -f $_.InterfaceDescription, $_.Status, $_.LinkSpeed, $_.MacAddress))\n}\nOut (Section 'ACTIVE IPv4')\nGet-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notlike '127.*' } | ForEach-Object {\n  Out (KV $_.InterfaceAlias $_.IPAddress)\n}\n\n# Advanced NIC properties (latency-relevant)\nOut (Section 'NIC ADVANCED PROPS (LATENCY)')\n$latencyProps = @(\n  '*Interrupt*Moderation*', '*Energy*Efficient*', '*Green*Ethernet*', '*EEE*',\n  '*Recv*Segment*Coalesc*', '*Large*Send*', '*RSS*', '*Flow*Control*',\n  '*Receive*Buffers*', '*Transmit*Buffers*', '*Priority*'\n)\nGet-NetAdapter -Physical | Where-Object Status -eq 'Up' | ForEach-Object {\n  $nic = $_\n  Out (\"-- {0} ({1}) --\" -f $nic.Name, $nic.InterfaceDescription)\n  Get-NetAdapterAdvancedProperty -Name $nic.Name | Where-Object {\n    $dn = $_.DisplayName\n    $latencyProps | Where-Object { $dn -like $_ }\n  } | ForEach-Object {\n    Out (KV $_.DisplayName $_.DisplayValue)\n  }\n}\n\n# --- Power ---\nOut (Section 'POWER')\n$scheme = powercfg /getactivescheme\nOut (KV 'ActiveScheme' $scheme)\n$batt = @(Get-CimInstance Win32_Battery)\nOut (KV 'FormFactorHint' $(if ($batt.Count -gt 0) { 'Battery present (laptop/handheld?)' } else { 'Desktop / no battery WMI' }))\n\n# --- Processes / overlays ---\nOut (Section 'OVERLAY / ESPORT PROCESSES')\n$watch = @(\n  'cs2','steam','faceit','discord','chrome','msedge','firefox','overwolf',\n  'nvidia share','nvidia web helper','nvcontainer','amdow','radeonsoftware',\n  'epicgameslauncher','lghub','icue','armoury','rgb','rtss','msi afterburner',\n  'process lasso','parkcontrol','timertool','intelligent standby','asus','razertype'\n)\nGet-Process | Sort-Object Name -Unique | ForEach-Object {\n  $n = $_.ProcessName\n  foreach ($w in $watch) {\n    if ($n -like \"*$w*\" -or $_.MainWindowTitle -like \"*$w*\") {\n      Out (KV 'Running' (\"{0}.exe  PID={1}\" -f $n, $_.Id))\n      break\n    }\n  }\n}\n\n# FACEIT specifically\n$faceit = Get-Process | Where-Object { $_.ProcessName -match 'faceit|anticheat' }\nif ($faceit) {\n  Out (KV 'FACEIT-related' (($faceit.ProcessName | Select-Object -Unique) -join ', '))\n} else {\n  Out (KV 'FACEIT-related' 'Not running now')\n}\n\n# --- Services of interest ---\nOut (Section 'KEY SERVICES')\n$svcNames = @('FaceitService','FACEIT','Steam Client Service','SysMain','DiagTrack','WSearch','vgc','vgk','EasyAntiCheat','BEService')\nforeach ($s in $svcNames) {\n  $svc = Get-Service -Name $s -ErrorAction SilentlyContinue\n  if (-not $svc) { $svc = Get-Service | Where-Object { $_.Name -like \"*$s*\" -or $_.DisplayName -like \"*$s*\" } | Select-Object -First 1 }\n  if ($svc) { Out (KV $svc.Name (\"{0} | {1}\" -f $svc.Status, $svc.StartType)) }\n}\n\n# --- CS2 / Steam paths ---\nOut (Section 'STEAM / CS2 PATHS')\n$steamCandidates = @(\n  (Try-Cmd { (Get-ItemProperty 'HKCU:\\Software\\Valve\\Steam').SteamPath }),\n  'C:\\Program Files (x86)\\Steam',\n  'D:\\Steam',\n  'E:\\Steam'\n) | Where-Object { $_ } | Select-Object -Unique\n\n$steamPath = $null\nforeach ($p in $steamCandidates) {\n  $norm = $p -replace '/', '\\'\n  if (Test-Path $norm) { $steamPath = $norm; break }\n}\nOut (KV 'SteamPath' $steamPath)\n\n$libraryFolders = @()\nif ($steamPath) {\n  $vdf = Join-Path $steamPath 'steamapps\\libraryfolders.vdf'\n  Out (KV 'libraryfolders.vdf' $(if (Test-Path $vdf) { $vdf } else { 'missing' }))\n  if (Test-Path $vdf) {\n    $content = Get-Content $vdf -Raw\n    [regex]::Matches($content, '\"path\"\\s+\"([^\"]+)\"') | ForEach-Object {\n      $libraryFolders += $_.Groups[1].Value -replace '\\\\\\\\', '\\'\n    }\n  }\n  $libraryFolders = @($steamPath) + $libraryFolders | Select-Object -Unique\n}\n\n$cs2Root = $null\nforeach ($lib in $libraryFolders) {\n  $cand = Join-Path $lib 'steamapps\\common\\Counter-Strike Global Offensive'\n  # CS2 still often under this folder name\n  $cand2 = Join-Path $lib 'steamapps\\common\\Counter-Strike Global Offensive\\game\\csgo'\n  if (Test-Path (Join-Path $lib 'steamapps\\common\\Counter-Strike Global Offensive\\game\\bin\\win64\\cs2.exe')) {\n    $cs2Root = Join-Path $lib 'steamapps\\common\\Counter-Strike Global Offensive'\n    break\n  }\n  if (Test-Path (Join-Path $lib 'steamapps\\common\\Counter-Strike 2\\game\\bin\\win64\\cs2.exe')) {\n    $cs2Root = Join-Path $lib 'steamapps\\common\\Counter-Strike 2'\n    break\n  }\n}\nOut (KV 'CS2Root' $cs2Root)\nif ($cs2Root) {\n  $exe = Join-Path $cs2Root 'game\\bin\\win64\\cs2.exe'\n  if (Test-Path $exe) {\n    $fi = Get-Item $exe\n    Out (KV 'cs2.exe' $fi.FullName)\n    Out (KV 'cs2.exe SizeMB' ([math]::Round($fi.Length/1MB, 1)))\n    Out (KV 'cs2.exe Modified' $fi.LastWriteTime)\n  }\n}\n\n# Video settings\nOut (Section 'CS2 VIDEO SETTINGS FILES')\n$videoHits = @()\nif ($steamPath) {\n  $ud = Join-Path $steamPath 'userdata'\n  if (Test-Path $ud) {\n    Get-ChildItem $ud -Directory | ForEach-Object {\n      $paths = @(\n        (Join-Path $_.FullName '730\\local\\cfg\\cs2_video.txt'),\n        (Join-Path $_.FullName '730\\local\\cfg\\video.txt'),\n        (Join-Path $_.FullName '730\\local\\cfg\\cs2_machine_convars.vcfg')\n      )\n      foreach ($vp in $paths) {\n        if (Test-Path $vp) { $videoHits += $vp }\n      }\n    }\n  }\n}\nif ($cs2Root) {\n  $cfgDir = Join-Path $cs2Root 'game\\csgo\\cfg'\n  if (Test-Path $cfgDir) {\n    Get-ChildItem $cfgDir -Filter '*video*' -ErrorAction SilentlyContinue | ForEach-Object { $videoHits += $_.FullName }\n  }\n}\n$videoHits = $videoHits | Select-Object -Unique\nif (-not $videoHits) { Out 'No CS2 video cfg found (Steam userdata empty or different library).' }\nforeach ($vh in $videoHits) {\n  Out (\"-- FILE: $vh --\")\n  Out (Get-Content $vh -Raw)\n}\n\n# Launch options from localconfig.vdf (best effort)\nOut (Section 'STEAM LAUNCH OPTIONS (730)')\n$launchFound = $false\nif ($steamPath) {\n  Get-ChildItem (Join-Path $steamPath 'userdata') -Directory -ErrorAction SilentlyContinue | ForEach-Object {\n    $lc = Join-Path $_.FullName 'config\\localconfig.vdf'\n    if (Test-Path $lc) {\n      $raw = Get-Content $lc -Raw\n      # Rough extract for app 730 LaunchOptions\n      if ($raw -match '(?s)\"730\"\\s*\\{.*?\"LaunchOptions\"\\s*\"([^\"]*)\"') {\n        Out (KV (\"User {0}\" -f $_.Name) $Matches[1])\n        $launchFound = $true\n      }\n    }\n  }\n}\nif (-not $launchFound) { Out 'LaunchOptions for 730 not found (parse miss or unset).' }\n\n# --- Stability hints ---\nOut (Section 'STABILITY / EVENT LOG (LAST 48H)')\n$since = (Get-Date).AddHours(-48)\n$whea = Get-WinEvent -FilterHashtable @{LogName='System'; ProviderName='Microsoft-Windows-WHEA-Logger'; StartTime=$since} -MaxEvents 15\nif ($whea) {\n  Out (KV 'WHEA events' $whea.Count)\n  $whea | Select-Object -First 5 | ForEach-Object { Out (\"  {0} Id={1} {2}\" -f $_.TimeCreated, $_.Id, $_.Message.Split(\"`n\")[0]) }\n} else { Out (KV 'WHEA events' '0') }\n\n$displayErr = Get-WinEvent -FilterHashtable @{LogName='System'; ProviderName='Display'; StartTime=$since} -MaxEvents 10\n$nv = Get-WinEvent -FilterHashtable @{LogName='System'; StartTime=$since; Level=2,3} -MaxEvents 80 |\n  Where-Object { $_.ProviderName -match 'nvlddmkm|amdkmdag|Display|Kernel-Power|Disk' }\nOut (KV 'Kernel/GPU/Disk warns(sample)' @($nv).Count)\n$nv | Select-Object -First 8 | ForEach-Object {\n  Out (\"  {0} [{1}] Id={2} {3}\" -f $_.TimeCreated, $_.ProviderName, $_.Id, (($_.Message -split \"`r?`n\")[0]))\n}\n\n# --- Autostart junk ---\nOut (Section 'RUN KEYS (HKCU/HKLM)')\nforeach ($rp in @(\n  'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run',\n  'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run'\n)) {\n  if (Test-Path $rp) {\n    Out (\"-- $rp --\")\n    Get-ItemProperty $rp | Out-String | ForEach-Object { Out $_.Trim() }\n  }\n}\n\n# --- Manual fields for user (script cannot know) ---\nOut (Section 'MANUAL \u2014 FILL BEFORE SEND')\nOut 'SymptomClass        : A tearing | B microstutter | C input lag | D hitch 0.5s+ | E mix ____'\nOut 'When                : always / fights / smokes / round change / after update ____'\nOut 'OfflineAlso         : yes/no (bot DM without FACEIT)'\nOut 'MonitorCable        : DP / HDMI'\nOut 'GSYNC_FreeSync      : on/off'\nOut 'CS2_DisplayMode     : fullscreen / borderless'\nOut 'fps_max             : ____'\nOut 'AVG_1pct_0.1pct     : ____ / ____ / ____   (CapFrameX or RTSS)'\nOut 'Ping_Loss_Choke_Var : ____ / ____ / ____ / ____'\nOut 'OC_Undervolt        : none / describe ____'\nOut 'CustomISO_Playbook  : stock / name ____'\nOut 'DualBoot            : no / yes ____'\n\nOut ''\nOut '=== END OF REPORT ==='\nOut 'Colle ce fichier entier dans le chat Cursor.'\n\n$report = $sb.ToString()\n[System.IO.File]::WriteAllText($outFile, $report, [System.Text.UTF8Encoding]::new($false))\n\nWrite-Host ''\nWrite-Host '========================================' -ForegroundColor Cyan\nWrite-Host ' FaceitEsportDiag termin\u00e9' -ForegroundColor Cyan\nWrite-Host \" Rapport : $outFile\" -ForegroundColor Yellow\nWrite-Host ' Ouvre le fichier, compl\u00e8te la section MANUAL, colle tout ici.' -ForegroundColor Cyan\nWrite-Host '========================================' -ForegroundColor Cyan\nWrite-Host ''\n\n# Also open folder / notepad\nTry-Cmd { Start-Process notepad.exe $outFile } | Out-Null\nTry-Cmd { explorer.exe /select,$outFile } | Out-Null\n";
+    document.getElementById('dl').addEventListener('click', function (e) {
+      e.preventDefault();
+      const blob = new Blob([window.FACEIT_DIAG_PS1], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'FaceitEsportDiag.ps1';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</body>
+</html>
